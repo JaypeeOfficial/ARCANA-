@@ -24,17 +24,17 @@ public class AuthenticateController : ControllerBase
         var response = new QueryOrCommandResult<AuthenticateUser.AuthenticateUserResult>();
         try
         {
-            // var query = new AuthenticateUser.AuthenticateUserQuery();
             var result = await _mediator.Send(request);
             response.Data = result;
+            response.Success = true;
+            response.Messages.Add("Log In successfully");
             return Ok(response);
         }
         catch (Exception e)
         {
-            return Conflict(new
-            {
-                e.Message
-            });
+            response.Success = false;
+            response.Messages.Add(e.Message);
+            return Conflict(response);
         }
     }
 }

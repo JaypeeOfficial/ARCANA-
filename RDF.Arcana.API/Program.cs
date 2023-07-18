@@ -43,6 +43,18 @@ builder.Services.AddAuthentication(authOptions =>
        
     });
 
+const string clientPermission = "_clientPermission";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: clientPermission, policy =>
+    {
+        policy.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
