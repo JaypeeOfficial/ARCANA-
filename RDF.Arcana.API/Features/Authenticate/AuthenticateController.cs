@@ -1,9 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MineralWaterMonitoring.Common;
+using MineralWaterMonitoring.Features.Authenticate;
+using RDF.Arcana.API.Common;
 
-namespace MineralWaterMonitoring.Features.Authenticate;
+namespace RDF.Arcana.API.Features.Authenticate;
+
 [Route("api/[controller]")]
 [ApiController]
 

@@ -10,7 +10,7 @@ using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Domain;
 using RDF.Arcana.API.Features.Users.Exception;
 
-namespace MineralWaterMonitoring.Features.Authenticate;
+namespace RDF.Arcana.API.Features.Authenticate;
 
 public class AuthenticateUser
 {

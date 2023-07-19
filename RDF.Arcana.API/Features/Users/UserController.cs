@@ -1,8 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using MineralWaterMonitoring.Common;
+using RDF.Arcana.API.Common;
 
 namespace RDF.Arcana.API.Features.Users;
+
+[Route("api/[controller]")]
+[ApiController]
 
 public class UserController : ControllerBase
 {

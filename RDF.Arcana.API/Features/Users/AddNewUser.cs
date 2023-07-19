@@ -43,7 +43,8 @@ public class AddNewUser
                     Fullname = command.Fullname,
                     Username = command.Username,
                     Password = BCrypt.Net.BCrypt.HashPassword(command.Password),
-                    IsActive = true
+                    UpdatedAt = DateTime.Now,
+                    IsActive = true,
                 };
 
                 await _context.Users.AddAsync(user, cancellationToken);

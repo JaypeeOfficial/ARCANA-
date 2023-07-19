@@ -15,7 +15,10 @@ builder.Services.AddControllers()
 
 
 var connectionString = builder.Configuration.GetConnectionString("DevConnection");
-builder.Services.AddDbContext<DataContext>(x => x.UseMySQL(connectionString));
+builder.Services.AddDbContext<DataContext>(x =>
+{
+    if (connectionString != null) x.UseMySQL(connectionString).UseSnakeCaseNamingConvention();
+});
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

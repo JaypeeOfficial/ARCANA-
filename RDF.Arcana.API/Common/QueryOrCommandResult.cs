@@ -1,4 +1,4 @@
-﻿namespace MineralWaterMonitoring.Common;
+﻿namespace RDF.Arcana.API.Common;
 
 public class QueryOrCommandResult<T>
 {
