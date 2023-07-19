@@ -31,6 +31,8 @@ public class UpdateDepartmentStatus
             }
 
             validateDepartment.IsActive = request.IsActive;
+            validateDepartment.UpdatedAt = DateTime.Now;
+            
             await _context.SaveChangesAsync(cancellationToken);
             return Unit.Value;
         }

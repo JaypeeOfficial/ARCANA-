@@ -34,6 +34,7 @@ public class UpdateDepartment
              }
 
              validateDepartment.DepartmentName = request.DepartmentName;
+             validateDepartment.UpdatedAt = DateTime.Now;
 
              await _context.SaveChangesAsync(cancellationToken);
              return Unit.Value;

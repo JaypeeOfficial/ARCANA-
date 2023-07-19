@@ -52,4 +52,22 @@ public class DepartmentController : ControllerBase
          return Conflict(response);
       }
    }
+
+   [HttpPatch("UpdateDepartmentStatus")]
+   public async Task<IActionResult> UpdateDepartmentStatus(UpdateDepartmentStatus.UpdateDepartmentStatusCommand command)
+   {
+      var response = new QueryOrCommandResult<object>();
+      try
+      {
+         await _mediator.Send(command);
+         response.Success = true;
+         response.Messages.Add("Status successfully updated");
+         return Ok(response);
+      }
+      catch (System.Exception e)
+      {
+         response.Messages.Add(e.Message);
+         return Conflict(response);
+      }
+   }
 }
