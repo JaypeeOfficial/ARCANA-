@@ -11,8 +11,8 @@ using RDF.Arcana.API.Data;
 namespace RDF.Arcana.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230719063613_Initial")]
-    partial class Initial
+    [Migration("20230718080414_AddUserAndSetupEntities")]
+    partial class AddUserAndSetupEntities
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,6 +59,14 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int")
+                        .HasColumnName("department_id");
+
                     b.Property<string>("Fullname")
                         .IsRequired()
                         .HasColumnType("longtext")
@@ -68,8 +76,31 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("is_active");
 
+                    b.Property<int>("LocationId")
+                        .HasColumnType("int")
+                        .HasColumnName("location_id");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int")
+                        .HasColumnName("role_id");
+
                     b.HasKey("Id")
                         .HasName("pk_customers");
+
+                    b.HasIndex("CompanyId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_customers_company_id");
+
+                    b.HasIndex("DepartmentId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_customers_department_id");
+
+                    b.HasIndex("LocationId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_customers_location_id");
+
+                    b.HasIndex("RoleId")
+                        .HasDatabaseName("ix_customers_role_id");
 
                     b.ToTable("customers", (string)null);
                 });
@@ -163,10 +194,6 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("created_at");
 
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int")
-                        .HasColumnName("customer_id");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("is_active");
@@ -182,9 +209,6 @@ namespace RDF.Arcana.API.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_locations");
-
-                    b.HasIndex("CustomerId")
-                        .HasDatabaseName("ix_locations_customer_id");
 
                     b.ToTable("locations", (string)null);
                 });
@@ -364,17 +388,9 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("int")
-                        .HasColumnName("company_id");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("created_at");
-
-                    b.Property<int>("DepartmentId")
-                        .HasColumnType("int")
-                        .HasColumnName("department_id");
 
                     b.Property<string>("Fullname")
                         .IsRequired()
@@ -385,18 +401,10 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("is_active");
 
-                    b.Property<int>("LocationId")
-                        .HasColumnType("int")
-                        .HasColumnName("location_id");
-
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("password");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int")
-                        .HasColumnName("role_id");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)")
@@ -410,22 +418,46 @@ namespace RDF.Arcana.API.Migrations
                     b.HasKey("Id")
                         .HasName("pk_users");
 
-                    b.HasIndex("CompanyId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_users_company_id");
-
-                    b.HasIndex("DepartmentId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_users_department_id");
-
-                    b.HasIndex("LocationId")
-                        .HasDatabaseName("ix_users_location_id");
-
-                    b.HasIndex("RoleId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_users_role_id");
-
                     b.ToTable("users", (string)null);
+                });
+
+            modelBuilder.Entity("RDF.Arcana.API.Domain.Customer", b =>
+                {
+                    b.HasOne("RDF.Arcana.API.Domain.Company", "Company")
+                        .WithOne("Customer")
+                        .HasForeignKey("RDF.Arcana.API.Domain.Customer", "CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_customers_companies_company_id");
+
+                    b.HasOne("RDF.Arcana.API.Domain.Department", "Department")
+                        .WithOne("Customer")
+                        .HasForeignKey("RDF.Arcana.API.Domain.Customer", "DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_customers_departments_department_id");
+
+                    b.HasOne("RDF.Arcana.API.Domain.Location", "Location")
+                        .WithOne("Customer")
+                        .HasForeignKey("RDF.Arcana.API.Domain.Customer", "LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_customers_locations_location_id");
+
+                    b.HasOne("RDF.Arcana.API.Domain.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_customers_roles_role_id");
+
+                    b.Navigation("Company");
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Location");
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("RDF.Arcana.API.Domain.Items", b =>
@@ -458,18 +490,6 @@ namespace RDF.Arcana.API.Migrations
                     b.Navigation("Uom");
                 });
 
-            modelBuilder.Entity("RDF.Arcana.API.Domain.Location", b =>
-                {
-                    b.HasOne("RDF.Arcana.API.Domain.Customer", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_locations_customers_customer_id");
-
-                    b.Navigation("Customer");
-                });
-
             modelBuilder.Entity("RDF.Arcana.API.Domain.ProductCategory", b =>
                 {
                     b.HasOne("RDF.Arcana.API.Domain.ProductSubCategory", "ProductSubCategory")
@@ -482,66 +502,27 @@ namespace RDF.Arcana.API.Migrations
                     b.Navigation("ProductSubCategory");
                 });
 
-            modelBuilder.Entity("RDF.Arcana.API.Domain.User", b =>
-                {
-                    b.HasOne("RDF.Arcana.API.Domain.Company", "Company")
-                        .WithOne("User")
-                        .HasForeignKey("RDF.Arcana.API.Domain.User", "CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_users_companies_company_id");
-
-                    b.HasOne("RDF.Arcana.API.Domain.Department", "Department")
-                        .WithOne("User")
-                        .HasForeignKey("RDF.Arcana.API.Domain.User", "DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_users_departments_department_id");
-
-                    b.HasOne("RDF.Arcana.API.Domain.Location", "Location")
-                        .WithMany()
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_users_locations_location_id");
-
-                    b.HasOne("RDF.Arcana.API.Domain.Role", "Role")
-                        .WithOne("User")
-                        .HasForeignKey("RDF.Arcana.API.Domain.User", "RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_users_roles_role_id");
-
-                    b.Navigation("Company");
-
-                    b.Navigation("Department");
-
-                    b.Navigation("Location");
-
-                    b.Navigation("Role");
-                });
-
             modelBuilder.Entity("RDF.Arcana.API.Domain.Company", b =>
                 {
-                    b.Navigation("User")
+                    b.Navigation("Customer")
                         .IsRequired();
                 });
 
             modelBuilder.Entity("RDF.Arcana.API.Domain.Department", b =>
                 {
-                    b.Navigation("User")
+                    b.Navigation("Customer")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("RDF.Arcana.API.Domain.Location", b =>
+                {
+                    b.Navigation("Customer")
                         .IsRequired();
                 });
 
             modelBuilder.Entity("RDF.Arcana.API.Domain.ProductSubCategory", b =>
                 {
                     b.Navigation("ProductCategory")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("RDF.Arcana.API.Domain.Role", b =>
-                {
-                    b.Navigation("User")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

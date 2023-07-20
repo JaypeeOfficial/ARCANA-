@@ -7,7 +7,7 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace RDF.Arcana.API.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class AddUserAndSetupEntities : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -33,21 +33,6 @@ namespace RDF.Arcana.API.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "customers",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    fullname = table.Column<string>(type: "longtext", nullable: false),
-                    is_active = table.Column<bool>(type: "tinyint(1)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_customers", x => x.id);
-                })
-                .Annotation("MySQL:Charset", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "departments",
                 columns: table => new
                 {
@@ -61,6 +46,23 @@ namespace RDF.Arcana.API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_departments", x => x.id);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "locations",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    location_name = table.Column<string>(type: "longtext", nullable: false),
+                    created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    is_active = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_locations", x => x.id);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -134,26 +136,21 @@ namespace RDF.Arcana.API.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "locations",
+                name: "users",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    location_name = table.Column<string>(type: "longtext", nullable: false),
+                    fullname = table.Column<string>(type: "longtext", nullable: false),
+                    username = table.Column<string>(type: "longtext", nullable: false),
+                    password = table.Column<string>(type: "longtext", nullable: false),
                     created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    is_active = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    customer_id = table.Column<int>(type: "int", nullable: false)
+                    updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    is_active = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_locations", x => x.id);
-                    table.ForeignKey(
-                        name: "fk_locations_customers_customer_id",
-                        column: x => x.customer_id,
-                        principalTable: "customers",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("pk_users", x => x.id);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -183,45 +180,41 @@ namespace RDF.Arcana.API.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "users",
+                name: "customers",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     fullname = table.Column<string>(type: "longtext", nullable: false),
-                    username = table.Column<string>(type: "longtext", nullable: false),
-                    password = table.Column<string>(type: "longtext", nullable: false),
-                    created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    is_active = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     company_id = table.Column<int>(type: "int", nullable: false),
                     department_id = table.Column<int>(type: "int", nullable: false),
                     location_id = table.Column<int>(type: "int", nullable: false),
-                    role_id = table.Column<int>(type: "int", nullable: false)
+                    role_id = table.Column<int>(type: "int", nullable: false),
+                    is_active = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_users", x => x.id);
+                    table.PrimaryKey("pk_customers", x => x.id);
                     table.ForeignKey(
-                        name: "fk_users_companies_company_id",
+                        name: "fk_customers_companies_company_id",
                         column: x => x.company_id,
                         principalTable: "companies",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_users_departments_department_id",
+                        name: "fk_customers_departments_department_id",
                         column: x => x.department_id,
                         principalTable: "departments",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_users_locations_location_id",
+                        name: "fk_customers_locations_location_id",
                         column: x => x.location_id,
                         principalTable: "locations",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_users_roles_role_id",
+                        name: "fk_customers_roles_role_id",
                         column: x => x.role_id,
                         principalTable: "roles",
                         principalColumn: "id",
@@ -267,6 +260,29 @@ namespace RDF.Arcana.API.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateIndex(
+                name: "ix_customers_company_id",
+                table: "customers",
+                column: "company_id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_customers_department_id",
+                table: "customers",
+                column: "department_id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_customers_location_id",
+                table: "customers",
+                column: "location_id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_customers_role_id",
+                table: "customers",
+                column: "role_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_items_meat_type_id",
                 table: "items",
                 column: "meat_type_id");
@@ -282,37 +298,9 @@ namespace RDF.Arcana.API.Migrations
                 column: "uom_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_locations_customer_id",
-                table: "locations",
-                column: "customer_id");
-
-            migrationBuilder.CreateIndex(
                 name: "ix_product_categories_product_sub_category_id",
                 table: "product_categories",
                 column: "product_sub_category_id",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "ix_users_company_id",
-                table: "users",
-                column: "company_id",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "ix_users_department_id",
-                table: "users",
-                column: "department_id",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "ix_users_location_id",
-                table: "users",
-                column: "location_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_users_role_id",
-                table: "users",
-                column: "role_id",
                 unique: true);
         }
 
@@ -320,19 +308,13 @@ namespace RDF.Arcana.API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "customers");
+
+            migrationBuilder.DropTable(
                 name: "items");
 
             migrationBuilder.DropTable(
                 name: "users");
-
-            migrationBuilder.DropTable(
-                name: "meat_types");
-
-            migrationBuilder.DropTable(
-                name: "product_categories");
-
-            migrationBuilder.DropTable(
-                name: "uoms");
 
             migrationBuilder.DropTable(
                 name: "companies");
@@ -347,10 +329,16 @@ namespace RDF.Arcana.API.Migrations
                 name: "roles");
 
             migrationBuilder.DropTable(
-                name: "product_sub_categories");
+                name: "meat_types");
 
             migrationBuilder.DropTable(
-                name: "customers");
+                name: "product_categories");
+
+            migrationBuilder.DropTable(
+                name: "uoms");
+
+            migrationBuilder.DropTable(
+                name: "product_sub_categories");
         }
     }
 }

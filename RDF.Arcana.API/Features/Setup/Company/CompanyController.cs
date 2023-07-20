@@ -22,20 +22,17 @@ public class CompanyController : ControllerBase
 
     [HttpPost]
     [Route("AddNewCompany")]
-    public async Task<IActionResult> AddNewCompany(AddNewCompany.AddNewCompanyCommand[] command)
+    public async Task<IActionResult> AddNewCompany(AddNewCompany.AddNewCompanyCommand command)
     {
-        foreach(var commands in command)
+        try
         {
-            try
-            {
-                await _mediator.Send(commands);
-            }
-            catch (Exception e)
-            {
-                return Conflict(e.Message);
-            }
+            await _mediator.Send(command);
+            return Ok("Successfully added!");
         }
-        return Ok("Successfully added all the companies!");
+        catch (Exception e)
+        {
+            return Conflict(e.Message);
+        }
     }
 
     [HttpGet]
