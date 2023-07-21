@@ -1,6 +1,7 @@
-﻿using System.Data.Entity;
+﻿using Microsoft.EntityFrameworkCore;
 using MediatR;
 using RDF.Arcana.API.Data;
+using RDF.Arcana.API.Features.Setup.Location.Exception;
 
 namespace RDF.Arcana.API.Features.Setup.Location;
 
@@ -24,6 +25,11 @@ public abstract class UpdateLocation
         {
             var location =
                 await _context.Locations.FirstOrDefaultAsync(x => x.Id == request.LocationId, cancellationToken);
+
+            if (location == null)
+            {
+                throw new NoLocationFoundException();
+            }
 
             location.LocationName = request.LocationName;
             location.UpdatedAt = DateTime.Now;
