@@ -23,20 +23,27 @@ public class AddNewDepartment
 
         public async Task<Unit> Handle(AddNewDepartmentCommand request, CancellationToken cancellationToken)
         {
-            var validateDepartment = await _context.Departments.FirstOrDefaultAsync(
+            var validateDepartment = await _context.Departments.SingleOrDefaultAsync(
                 x => x.DepartmentName == request.DepartmentName,
                 cancellationToken);
+            
+            
             if (validateDepartment is not null)
             {
-                throw new DepartmentAlreadyExistException(request.DepartmentName);
+                validateDepartment.IsActive = request.IsActive;
+                _context.Departments.Attach(validateDepartment).State = EntityState.Modified;
+                
             }
-
-            var department = new Domain.Department
+            else
             {
-                DepartmentName = request.DepartmentName,
-                IsActive = true
-            };
-            await _context.Departments.AddAsync(department, cancellationToken);
+                var department = new Domain.Department
+                {
+                    DepartmentName = request.DepartmentName,
+                    IsActive = request.IsActive
+                };
+                await _context.Departments.AddAsync(department, cancellationToken);
+            }
+            
             await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;

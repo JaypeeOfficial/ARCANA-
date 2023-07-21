@@ -14,8 +14,8 @@ public class User : BaseEntity
     public int DepartmentId { get; set; }
     public int LocationId { get; set; }
     public int RoleId { get; set; }
-    public Company Company { get; set; }
-    public Department Department { get; set; }
-    public Location Location { get; set; }
-    public Role Role { get; set; }
+    public virtual Company Company { get; set; }
+    public virtual Department Department { get; set; }
+    public virtual Location Location { get; set; }
+    public virtual Role Role { get; set; }
 }

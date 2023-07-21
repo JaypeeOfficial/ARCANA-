@@ -24,41 +24,22 @@ public class CompanyController : ControllerBase
     [Route("AddNewCompany")]
     public async Task<IActionResult> AddNewCompany(AddNewCompany.AddNewCompanyCommand command)
     {
-        try
-        {
-            await _mediator.Send(command);
-            return Ok("Successfully added!");
-        }
-        catch (Exception e)
-        {
-            return Conflict(e.Message);
-        }
+            try
+            {
+                await _mediator.Send(command);
+                return Ok("Successfully added!");
+                
+            }
+            catch (Exception e)
+            {
+                return Conflict(e.Message);
+            }
     }
-
-    [HttpGet]
-    [Route("GetAllCompaniesAsync")]
-    public async Task<IActionResult> GetAllCompanies()
+    
+    [HttpGet("GetAllCompanies")]
+    public async Task<IActionResult> GetAllCompanies([FromQuery]GetCompaniesAsync.GetCompaniesQuery request)
     {
-        var response = new QueryOrCommandResult<IEnumerable<GetAllCompaniesAsync.GetAllCompaniesResult>>();
-        try
-        {
-            var query = new GetAllCompaniesAsync.GetAllCompaniesQuery();
-            var result = await _mediator.Send(query);
-            response.Success = true;
-            response.Data = result;
-            response.Messages.Add("Collection successfully fetch");
-            return Ok(response);
-
-        }
-        catch (Exception e)
-        {
-            return Conflict(e.Message);
-        }
-    }
-
-    [HttpGet("GetAllCompaniesByStatus")]
-    public async Task<IActionResult> GetAllCompaniesByStatus([FromQuery]GetCompaniesByStatusAsync.GetCompaniesByStatusQuery request)
-    {
+        var response = new QueryOrCommandResult<object>();
       
         try
         {
@@ -83,13 +64,15 @@ public class CompanyController : ControllerBase
                     companies.TotalPages,
                     companies.HasPreviousPage,
                     companies.HasNextPage
-                }
+                },
+                Status = StatusCodes.Status200OK
             };
             results.Messages.Add("Successfully Fetch");
             return Ok(results);
         }
         catch (Exception e)
         {
+            response.Status = StatusCodes.Status409Conflict;
             return Conflict(e.Message);
         }
     }

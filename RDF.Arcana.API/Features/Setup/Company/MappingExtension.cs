@@ -2,22 +2,11 @@
 
 public static class MappingExtension
 {
-    public static GetAllCompaniesAsync
-        .GetAllCompaniesResult ToGetAllCompaniesResult(this Domain.Company company)
-    {
-        return new GetAllCompaniesAsync.GetAllCompaniesResult
-        {
-            CompanyName = company.CompanyName,
-            CreatedAt = company.CreatedAt,
-            UpdatedAt = company.UpdatedAt,
-            IsActive = company.IsActive
-        };
-    }
     
-    public static GetCompaniesByStatusAsync.GetCompaniesByStatusResult
-         ToGetAllCompaniesByStatusResult(this Domain.Company company)
+    public static GetCompaniesAsync.GetCompaniesResult
+         ToGetAllCompaniesResult(this Domain.Company company)
     {
-        return new GetCompaniesByStatusAsync.GetCompaniesByStatusResult
+        return new GetCompaniesAsync.GetCompaniesResult
         {
             CompanyName = company.CompanyName,
             CreatedAt = company.CreatedAt,
