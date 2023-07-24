@@ -11,7 +11,7 @@ public class GetCompaniesAsync
     public class GetCompaniesQuery : UserParams, IRequest<PagedList<GetCompaniesResult>>
     {
         public bool? Status { get; set; }
-        public string? Search { get; set; }
+        public string Search { get; set; }
     }
 
     public class GetCompaniesResult

@@ -18,7 +18,7 @@ public class AddNewUser
         public string Password { get; set; }
         public int LocationId { get; set; }
         public int DepartmentId { get; set; }
-        public int RoleId { get; set; }
+        public int UserRoleId { get; set; }
         public int CompanyId { get; set; }
 
 
@@ -37,8 +37,8 @@ public class AddNewUser
                     await _context.Users.FirstOrDefaultAsync(x => x.Username == command.Username, cancellationToken);
                 var validateCompany =
                     await _context.Companies.AnyAsync(x => x.Id == command.CompanyId, cancellationToken);
-                var validateRole =
-                    await _context.Roles.AnyAsync(x => x.Id == command.RoleId, cancellationToken);
+                var validateUserRole =
+                    await _context.Roles.AnyAsync(x => x.Id == command.UserRoleId, cancellationToken);
                 var validateDepartments =
                     await _context.Departments.AnyAsync(x => x.Id == command.DepartmentId,
                         cancellationToken);
@@ -48,7 +48,7 @@ public class AddNewUser
                     throw new NoCompanyFoundException();
                 }
 
-                if (!validateRole)
+                if (!validateUserRole)
                 {
                     throw new NoRoleFoundException();
                 }
@@ -68,7 +68,7 @@ public class AddNewUser
                     CompanyId = command.CompanyId,
                     LocationId = command.LocationId,
                     DepartmentId = command.DepartmentId,
-                    RoleId = command.RoleId,
+                    UserRoleId = command.UserRoleId,
                     IsActive = true,
                 };
 

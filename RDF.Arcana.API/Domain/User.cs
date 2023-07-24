@@ -15,11 +15,11 @@ public class User : BaseEntity
     public int CompanyId { get; set; }
     public int DepartmentId { get; set; }
     public int LocationId { get; set; }
-    public int RoleId { get; set; }
+    public int UserRoleId { get; set; }
     public virtual Company Company { get; set; }
     public virtual Department Department { get; set; }
     public virtual Location Location { get; set; }
-    public virtual Role Role { get; set; }
+    public virtual UserRoles UserRoles { get; set; }
 }
 
 public class UserValidator : AbstractValidator<User>

@@ -20,13 +20,14 @@ public class GetUsersAsync
     {
         public string Fullname { get; set; }
         public string Username { get; set; }
-        public string Password { get; set; }
         public DateTime CreatedAt { get; set; }
         public bool IsActive { get; set; }
         public string CompanyName { get; set; }
         public string DepartmentName { get; set; }
         public string LocationName { get; set; }
         public string RoleName { get; set; }
+        public ICollection<string> Permission { get; set; }
+        
     }
     public class Handler : IRequestHandler<GetUserAsyncQuery, PagedList<GetUserAsyncQueryResult>>
     {
@@ -40,7 +41,7 @@ public class GetUsersAsync
         public async Task<PagedList<GetUserAsyncQueryResult>> Handle(GetUserAsyncQuery request, CancellationToken cancellationToken)
         {
             IQueryable<User> users = _context.Users
-                .Include(x => x.Role)
+                .Include(x => x.UserRoles)
                 .Include(x => x.Department)
                 .Include(x => x.Company)
                 .Include(x => x.Location);

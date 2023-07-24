@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RDF.Arcana.API.Data;
 
@@ -10,9 +11,11 @@ using RDF.Arcana.API.Data;
 namespace RDF.Arcana.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230724082050_AddModuleEntity")]
+    partial class AddModuleEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -458,17 +461,13 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("password");
 
-                    b.Property<int?>("RoleId")
+                    b.Property<int>("RoleId")
                         .HasColumnType("int")
                         .HasColumnName("role_id");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("updated_at");
-
-                    b.Property<int>("UserRoleId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_role_id");
 
                     b.Property<string>("Username")
                         .HasColumnType("longtext")
@@ -489,44 +488,7 @@ namespace RDF.Arcana.API.Migrations
                     b.HasIndex("RoleId")
                         .HasDatabaseName("ix_users_role_id");
 
-                    b.HasIndex("UserRoleId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_users_user_role_id");
-
                     b.ToTable("users", (string)null);
-                });
-
-            modelBuilder.Entity("RDF.Arcana.API.Domain.UserRoles", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("created_at");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("is_active");
-
-                    b.Property<string>("Permissions")
-                        .HasColumnType("longtext")
-                        .HasColumnName("permissions");
-
-                    b.Property<string>("RoleName")
-                        .HasColumnType("longtext")
-                        .HasColumnName("role_name");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("updated_at");
-
-                    b.HasKey("Id")
-                        .HasName("pk_user_roles");
-
-                    b.ToTable("user_roles", (string)null);
                 });
 
             modelBuilder.Entity("RDF.Arcana.API.Domain.Items", b =>
@@ -606,17 +568,12 @@ namespace RDF.Arcana.API.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_users_locations_location_id");
 
-                    b.HasOne("RDF.Arcana.API.Domain.Role", null)
+                    b.HasOne("RDF.Arcana.API.Domain.Role", "Role")
                         .WithMany("Users")
                         .HasForeignKey("RoleId")
-                        .HasConstraintName("fk_users_roles_role_id");
-
-                    b.HasOne("RDF.Arcana.API.Domain.UserRoles", "UserRoles")
-                        .WithOne("User")
-                        .HasForeignKey("RDF.Arcana.API.Domain.User", "UserRoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_users_user_roles_user_role_id");
+                        .HasConstraintName("fk_users_roles_role_id");
 
                     b.Navigation("Company");
 
@@ -624,7 +581,7 @@ namespace RDF.Arcana.API.Migrations
 
                     b.Navigation("Location");
 
-                    b.Navigation("UserRoles");
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("RDF.Arcana.API.Domain.Company", b =>
@@ -650,11 +607,6 @@ namespace RDF.Arcana.API.Migrations
             modelBuilder.Entity("RDF.Arcana.API.Domain.Role", b =>
                 {
                     b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("RDF.Arcana.API.Domain.UserRoles", b =>
-                {
-                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

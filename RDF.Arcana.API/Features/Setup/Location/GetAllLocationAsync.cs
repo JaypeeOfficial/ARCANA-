@@ -11,7 +11,7 @@ public class GetAllLocationAsync
     public class GetAllLocationAsyncQuery : UserParams, IRequest<PagedList<GetAllLocationAsyncResult>>
     {
         public bool Status { get; set; }
-        public string? Search { get; set; }
+        public string Search { get; set; }
     }
 
     public class GetAllLocationAsyncResult

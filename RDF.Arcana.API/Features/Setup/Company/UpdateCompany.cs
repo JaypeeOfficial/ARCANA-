@@ -10,7 +10,7 @@ public class UpdateCompany
     public class UpdateCompanyCommand : IRequest<Unit>
     {
         public int CompanyId { get; set; }
-        public string? CompanyName { get; set; }
+        public string CompanyName { get; set; }
     }
 
     public class Handler : IRequestHandler<UpdateCompanyCommand, Unit>

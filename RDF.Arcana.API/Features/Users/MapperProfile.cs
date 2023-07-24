@@ -16,7 +16,8 @@ public static class MapperProfile
             CompanyName = user.Company.CompanyName,
             DepartmentName = user.Department.DepartmentName,
             LocationName = user.Location.LocationName,
-            RoleName = user.Role.RoleName
+            RoleName = user.UserRoles.RoleName,
+            Permission = user.UserRoles.Permissions
         };
     }
 }

@@ -98,4 +98,24 @@ public class RoleController : ControllerBase
             return Ok(response);
         }
     }
+
+    [HttpPatch("UpdateRoleStatus")]
+    public async Task<IActionResult> UpdateRoleStatus(UpdateRoleStatus.UpdateRoleStatusCommand command)
+    {
+        var response = new QueryOrCommandResult<object>();
+        try
+        {
+            await _mediator.Send(command);
+            response.Status = StatusCodes.Status200OK;
+            response.Success = true;
+            response.Messages.Add("The Role status has been updated successfully");
+            return Ok(response);
+        }
+        catch (System.Exception e)
+        {
+            response.Status = StatusCodes.Status409Conflict;
+            response.Messages.Add(e.Message);
+            return Conflict(response);
+        }
+    }
 }
