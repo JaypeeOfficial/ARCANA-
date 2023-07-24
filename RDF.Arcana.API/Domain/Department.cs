@@ -4,7 +4,6 @@ namespace RDF.Arcana.API.Domain;
 
 public class Department : BaseEntity
 {
-    public int DepartmentId { get; set; }
     public string DepartmentName { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? UpdatedAt { get; set; }

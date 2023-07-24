@@ -7,7 +7,7 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace RDF.Arcana.API.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,8 +21,7 @@ namespace RDF.Arcana.API.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    company_id = table.Column<int>(type: "int", nullable: false),
-                    company_name = table.Column<string>(type: "longtext", nullable: false),
+                    company_name = table.Column<string>(type: "longtext", nullable: true),
                     created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     is_active = table.Column<bool>(type: "tinyint(1)", nullable: false)
@@ -39,7 +38,7 @@ namespace RDF.Arcana.API.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    fullname = table.Column<string>(type: "longtext", nullable: false),
+                    fullname = table.Column<string>(type: "longtext", nullable: true),
                     is_active = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
@@ -54,8 +53,7 @@ namespace RDF.Arcana.API.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    department_id = table.Column<int>(type: "int", nullable: false),
-                    department_name = table.Column<string>(type: "longtext", nullable: false),
+                    department_name = table.Column<string>(type: "longtext", nullable: true),
                     created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     is_active = table.Column<bool>(type: "tinyint(1)", nullable: false)
@@ -72,7 +70,7 @@ namespace RDF.Arcana.API.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    location_name = table.Column<string>(type: "longtext", nullable: false),
+                    location_name = table.Column<string>(type: "longtext", nullable: true),
                     created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     is_active = table.Column<bool>(type: "tinyint(1)", nullable: false)
@@ -89,7 +87,7 @@ namespace RDF.Arcana.API.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    meat_type_name = table.Column<string>(type: "longtext", nullable: false),
+                    meat_type_name = table.Column<string>(type: "longtext", nullable: true),
                     created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     type = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     is_active = table.Column<bool>(type: "tinyint(1)", nullable: false)
@@ -106,7 +104,7 @@ namespace RDF.Arcana.API.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    product_sub_category_name = table.Column<string>(type: "longtext", nullable: false),
+                    product_sub_category_name = table.Column<string>(type: "longtext", nullable: true),
                     created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     is_active = table.Column<bool>(type: "tinyint(1)", nullable: false)
@@ -123,7 +121,7 @@ namespace RDF.Arcana.API.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    role_name = table.Column<string>(type: "longtext", nullable: false),
+                    role_name = table.Column<string>(type: "longtext", nullable: true),
                     created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     is_active = table.Column<bool>(type: "tinyint(1)", nullable: false)
@@ -140,8 +138,8 @@ namespace RDF.Arcana.API.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    uom_code = table.Column<string>(type: "longtext", nullable: false),
-                    uom_description = table.Column<string>(type: "longtext", nullable: false),
+                    uom_code = table.Column<string>(type: "longtext", nullable: true),
+                    uom_description = table.Column<string>(type: "longtext", nullable: true),
                     created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     is_active = table.Column<bool>(type: "tinyint(1)", nullable: false)
@@ -158,9 +156,9 @@ namespace RDF.Arcana.API.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    product_category_name = table.Column<string>(type: "longtext", nullable: false),
+                    product_category_name = table.Column<string>(type: "longtext", nullable: true),
                     product_sub_category_id = table.Column<int>(type: "int", nullable: false),
-                    added_by = table.Column<string>(type: "longtext", nullable: false),
+                    added_by = table.Column<string>(type: "longtext", nullable: true),
                     created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     is_active = table.Column<bool>(type: "tinyint(1)", nullable: false)
@@ -183,9 +181,9 @@ namespace RDF.Arcana.API.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    fullname = table.Column<string>(type: "longtext", nullable: false),
-                    username = table.Column<string>(type: "longtext", nullable: false),
-                    password = table.Column<string>(type: "longtext", nullable: false),
+                    fullname = table.Column<string>(type: "longtext", nullable: true),
+                    username = table.Column<string>(type: "longtext", nullable: true),
+                    password = table.Column<string>(type: "longtext", nullable: true),
                     created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     is_active = table.Column<bool>(type: "tinyint(1)", nullable: false),
@@ -230,8 +228,8 @@ namespace RDF.Arcana.API.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    item_code = table.Column<string>(type: "longtext", nullable: false),
-                    item_description = table.Column<string>(type: "longtext", nullable: false),
+                    item_code = table.Column<string>(type: "longtext", nullable: true),
+                    item_description = table.Column<string>(type: "longtext", nullable: true),
                     uom_id = table.Column<int>(type: "int", nullable: false),
                     product_category_id = table.Column<int>(type: "int", nullable: false),
                     meat_type_id = table.Column<int>(type: "int", nullable: false),

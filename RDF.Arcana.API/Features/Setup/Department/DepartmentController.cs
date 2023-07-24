@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using RDF.Arcana.API.Common;
 using RDF.Arcana.API.Common.Extension;
-using RDF.Arcana.API.Features.Setup.Company;
 
 namespace RDF.Arcana.API.Features.Setup.Department;
 
@@ -25,10 +24,10 @@ public class DepartmentController : ControllerBase
          try
          {
             await _mediator.Send(command);
+            response.Status = StatusCodes.Status200OK;
             response.Success = true;
             response.Messages.Add($"Department {command.DepartmentName} successfully added");
             return Ok(response);
-
          }
          catch (System.Exception e)
          {
@@ -74,7 +73,7 @@ public class DepartmentController : ControllerBase
       }
    }
 
-   [HttpGet("GetAllDepartment")]
+   [HttpGet("GetAllDepartment", Name = "GetAllDepartment")]
    public async Task<IActionResult> GetAllDepartmentByStatus([FromQuery]
       GetDepartmentAsync.GetDepartmentAsyncQuery command)
    {

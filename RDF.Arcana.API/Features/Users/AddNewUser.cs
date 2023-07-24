@@ -2,6 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Domain;
+using RDF.Arcana.API.Features.Setup.Company.Exceptions;
+using RDF.Arcana.API.Features.Setup.Department.Exception;
+using RDF.Arcana.API.Features.Setup.Role.Exception;
 using RDF.Arcana.API.Features.Users.Exception;
 
 namespace RDF.Arcana.API.Features.Users;
@@ -10,16 +13,13 @@ public class AddNewUser
 {
     public class AddNewUserCommand : IRequest<Unit>
     {
-        public AddNewUserCommand(string fullname, string username, string password)
-        {
-            Fullname = fullname;
-            Username = username;
-            Password = password;
-        }
-
-        public string Fullname { get; }
-        public string Username { get; }
-        public string Password { get; }
+        public string Fullname { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public int LocationId { get; set; }
+        public int DepartmentId { get; set; }
+        public int RoleId { get; set; }
+        public int CompanyId { get; set; }
 
 
         public class Handler : IRequestHandler<AddNewUserCommand, Unit>
@@ -35,6 +35,28 @@ public class AddNewUser
             {
                 var validateExistingUser =
                     await _context.Users.FirstOrDefaultAsync(x => x.Username == command.Username, cancellationToken);
+                var validateCompany =
+                    await _context.Companies.AnyAsync(x => x.Id == command.CompanyId, cancellationToken);
+                var validateRole =
+                    await _context.Roles.AnyAsync(x => x.Id == command.RoleId, cancellationToken);
+                var validateDepartments =
+                    await _context.Departments.AnyAsync(x => x.Id == command.DepartmentId,
+                        cancellationToken);
+
+                if (!validateCompany)
+                {
+                    throw new NoCompanyFoundException();
+                }
+
+                if (!validateRole)
+                {
+                    throw new NoRoleFoundException();
+                }
+
+                if (!validateDepartments)
+                {
+                    throw new NoDepartmentFoundException();
+                }
 
                 if (validateExistingUser is not null) throw new UserAlreadyExistException(command.Username);
 
@@ -43,7 +65,10 @@ public class AddNewUser
                     Fullname = command.Fullname,
                     Username = command.Username,
                     Password = BCrypt.Net.BCrypt.HashPassword(command.Password),
-                    UpdatedAt = DateTime.Now,
+                    CompanyId = command.CompanyId,
+                    LocationId = command.LocationId,
+                    DepartmentId = command.DepartmentId,
+                    RoleId = command.RoleId,
                     IsActive = true,
                 };
 

@@ -11,8 +11,8 @@ using RDF.Arcana.API.Data;
 namespace RDF.Arcana.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230721054700_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230724012014_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,12 +29,7 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("int")
-                        .HasColumnName("company_id");
-
                     b.Property<string>("CompanyName")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("company_name");
 
@@ -64,7 +59,6 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnName("id");
 
                     b.Property<string>("Fullname")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("fullname");
 
@@ -89,12 +83,7 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("created_at");
 
-                    b.Property<int>("DepartmentId")
-                        .HasColumnType("int")
-                        .HasColumnName("department_id");
-
                     b.Property<string>("DepartmentName")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("department_name");
 
@@ -124,12 +113,10 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnName("is_active");
 
                     b.Property<string>("ItemCode")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("item_code");
 
                     b.Property<string>("ItemDescription")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("item_description");
 
@@ -176,7 +163,6 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnName("is_active");
 
                     b.Property<string>("LocationName")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("location_name");
 
@@ -206,7 +192,6 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnName("is_active");
 
                     b.Property<string>("MeatTypeName")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("meat_type_name");
 
@@ -228,7 +213,6 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnName("id");
 
                     b.Property<string>("AddedBy")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("added_by");
 
@@ -241,7 +225,6 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnName("is_active");
 
                     b.Property<string>("ProductCategoryName")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("product_category_name");
 
@@ -279,7 +262,6 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnName("is_active");
 
                     b.Property<string>("ProductSubCategoryName")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("product_sub_category_name");
 
@@ -309,7 +291,6 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnName("is_active");
 
                     b.Property<string>("RoleName")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("role_name");
 
@@ -339,12 +320,10 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnName("is_active");
 
                     b.Property<string>("UomCode")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("uom_code");
 
                     b.Property<string>("UomDescription")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("uom_description");
 
@@ -378,7 +357,6 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnName("department_id");
 
                     b.Property<string>("Fullname")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("fullname");
 
@@ -391,7 +369,6 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnName("location_id");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("password");
 
@@ -404,7 +381,6 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnName("updated_at");
 
                     b.Property<string>("Username")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("username");
 
@@ -524,8 +500,7 @@ namespace RDF.Arcana.API.Migrations
 
             modelBuilder.Entity("RDF.Arcana.API.Domain.ProductSubCategory", b =>
                 {
-                    b.Navigation("ProductCategory")
-                        .IsRequired();
+                    b.Navigation("ProductCategory");
                 });
 
             modelBuilder.Entity("RDF.Arcana.API.Domain.Role", b =>

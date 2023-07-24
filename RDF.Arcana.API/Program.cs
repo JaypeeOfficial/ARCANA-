@@ -1,34 +1,46 @@
+using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RDF.Arcana.API.Data;
+using RDF.Arcana.API.Domain;
 using RDF.Arcana.API.Features.Authenticate;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
+// builder.Services.AddFluentValidationAutoValidation(
+//     options =>
+//
+//         options.)
+//
+// );
+
 builder.Services.AddMediatR(x => x.RegisterServicesFromAssemblies(typeof(Program).Assembly));
-builder.Services.AddControllers(
+// builder.Services.AddControllers(
+// //
+// // config =>
+// //     {
+// //         var policy = new AuthorizationPolicyBuilder()
+// //             .RequireAuthenticatedUser()
+// //             .Build();
+// //
+// //         config.Filters.Add(new AuthorizeFilter(policy));
+// // //     }
 //
-// config =>
-//     {
-//         var policy = new AuthorizationPolicyBuilder()
-//             .RequireAuthenticatedUser()
-//             .Build();
-//
-//         config.Filters.Add(new AuthorizeFilter(policy));
-// //     }
-)
-    .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-//
-// builder.Services.AddControllers()
+//     
+// )
 //     .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+// //
+// // builder.Services.AddControllers().AddFluentValidation()
 
 var connectionString = builder.Configuration.GetConnectionString("DevConnection");
 builder.Services.AddDbContext<DataContext>(x =>

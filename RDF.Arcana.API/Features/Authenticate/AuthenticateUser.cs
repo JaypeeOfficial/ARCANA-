@@ -49,6 +49,8 @@ public class AuthenticateUser
             get;
             set;
         }
+        
+        public int RoleId { get; set; }
 
         
         public string Token
@@ -63,6 +65,7 @@ public class AuthenticateUser
             Fullname = user.Fullname;
             Username = user.Username;
             Token = token;
+            RoleId = user.RoleId;
         }
 
         public class Handler : IRequestHandler<AuthenticateUserQuery, AuthenticateUserResult>
@@ -81,7 +84,10 @@ public class AuthenticateUser
             public async Task<AuthenticateUserResult> Handle(AuthenticateUserQuery command,
                             CancellationToken cancellationToken)
             {
-                var user = await _context.Users.SingleOrDefaultAsync(x => x.Username == command.Username, cancellationToken);
+                var user = await _context.Users
+                        .Include(x => x.Role)
+                    .SingleOrDefaultAsync(x => x.Username == command.Username, cancellationToken)
+                    ;
             
                 if (user == null || !BCrypt.Net.BCrypt.Verify(command.Password, user.Password))
                 {

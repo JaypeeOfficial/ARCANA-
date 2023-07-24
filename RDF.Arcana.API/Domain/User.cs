@@ -1,4 +1,6 @@
-﻿using RDF.Arcana.API.Common;
+﻿using FluentValidation;
+using FluentValidation.Validators;
+using RDF.Arcana.API.Common;
 
 namespace RDF.Arcana.API.Domain;
 
@@ -18,4 +20,14 @@ public class User : BaseEntity
     public virtual Department Department { get; set; }
     public virtual Location Location { get; set; }
     public virtual Role Role { get; set; }
+}
+
+public class UserValidator : AbstractValidator<User>
+{
+    public UserValidator()
+    {
+        RuleFor(x => x.Id).NotNull();
+        RuleFor(x => x.Username).NotEmpty().WithMessage("Username is required!")
+            .MinimumLength(3).WithMessage("Username must be at least 3 character long!");
+    }
 }

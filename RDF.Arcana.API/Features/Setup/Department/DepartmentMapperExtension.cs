@@ -10,7 +10,8 @@ public static class DepartmentMapperExtension
             DepartmentName = department.DepartmentName,
             CreatedAt = department.CreatedAt,
             UpdatedAt = department.UpdatedAt,
-            IsActive = department.IsActive
+            IsActive = department.IsActive,
+            Users = department.Users.Select(user => user.Fullname).ToList()
         };
     }
 }
