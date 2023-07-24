@@ -1,9 +1,8 @@
-﻿using System.Data.Entity;
-using ELIXIR.DATA.DATA_ACCESS_LAYER.HELPERS;
+﻿using ELIXIR.DATA.DATA_ACCESS_LAYER.HELPERS;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using RDF.Arcana.API.Common.Pagination;
 using RDF.Arcana.API.Data;
-using RDF.Arcana.API.Domain;
 
 namespace RDF.Arcana.API.Features.Setup.Role;
 
@@ -39,7 +38,7 @@ public class GetRolesAsync
 
         public async Task<PagedList<GetRolesAsyncResult>> Handle(GetRolesAsyncQuery request, CancellationToken cancellationToken)
         {
-            var roles = _context.Roles.Include(x => x.Users);
+            IQueryable<Domain.Role> roles = _context.Roles.Include(x => x.Users);
             
             if (!string.IsNullOrEmpty(request.Search))
             {

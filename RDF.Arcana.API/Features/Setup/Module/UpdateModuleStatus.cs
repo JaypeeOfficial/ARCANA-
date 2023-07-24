@@ -1,8 +1,7 @@
-﻿using System.Data.Entity;
-using MediatR;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Module.Exception;
-using RDF.Arcana.API.Features.Setup.Role;
 
 namespace RDF.Arcana.API.Features.Setup.Module;
 
