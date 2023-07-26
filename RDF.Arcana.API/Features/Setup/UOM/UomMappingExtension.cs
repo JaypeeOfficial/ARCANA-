@@ -1,0 +1,21 @@
+﻿using RDF.Arcana.API.Domain;
+
+namespace RDF.Arcana.API.Features.Setup.UOM;
+
+public static class UomMappingExtension
+{
+    public static GetUomAsync.GetUomQueryResult
+        ToGetUomQueryResult(this Uom uom)
+    {
+        return new GetUomAsync.GetUomQueryResult
+        {
+            UomCode = uom.UomCode,
+            UomDescription = uom.UomDescription,
+            CreatedAt = uom.CreatedAt,
+            UpdatedAt = uom.UpdatedAt,
+            AddedBy = uom.AdddedBy,
+            ModifiedBy = uom.ModifiedBy,
+            IsActive = uom.IsActive
+        };
+    }
+}

@@ -26,9 +26,9 @@ public class AddNewLocation
             var existingLocation =
                 await _context.Locations.FirstOrDefaultAsync(x => x.LocationName == request.LocationName,
                     cancellationToken);
-            if (existingLocation is null)
+            if (existingLocation is not null)
             {
-                throw new NoLocationFoundException();
+                throw new LocationAlreadyExist();
             }
            
             var location = new Domain.Location

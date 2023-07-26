@@ -9,7 +9,6 @@ namespace RDF.Arcana.API.Features.Setup.Location;
 [Route("api/[controller]")]
 [ApiController]
 
-
 public class LocationController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -58,7 +57,7 @@ public class LocationController : ControllerBase
     }
 
     [HttpGet("GetAllLocations")]
-    public async Task<IActionResult> GetAllLocations(GetAllLocationAsync.GetAllLocationAsyncQuery query)
+    public async Task<IActionResult> GetAllLocations([FromQuery]GetAllLocationAsync.GetAllLocationAsyncQuery query)
     {
         try
         {

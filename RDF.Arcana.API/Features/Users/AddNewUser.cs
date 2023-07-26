@@ -4,7 +4,7 @@ using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Domain;
 using RDF.Arcana.API.Features.Setup.Company.Exceptions;
 using RDF.Arcana.API.Features.Setup.Department.Exception;
-using RDF.Arcana.API.Features.Setup.Role.Exception;
+using RDF.Arcana.API.Features.Setup.UserRoles.Exceptions;
 using RDF.Arcana.API.Features.Users.Exception;
 
 namespace RDF.Arcana.API.Features.Users;
@@ -38,7 +38,7 @@ public class AddNewUser
                 var validateCompany =
                     await _context.Companies.AnyAsync(x => x.Id == command.CompanyId, cancellationToken);
                 var validateUserRole =
-                    await _context.Roles.AnyAsync(x => x.Id == command.UserRoleId, cancellationToken);
+                    await _context.UserRoles.AnyAsync(x => x.Id == command.UserRoleId, cancellationToken);
                 var validateDepartments =
                     await _context.Departments.AnyAsync(x => x.Id == command.DepartmentId,
                         cancellationToken);
@@ -50,7 +50,7 @@ public class AddNewUser
 
                 if (!validateUserRole)
                 {
-                    throw new NoRoleFoundException();
+                    throw new UserRoleNotFoundException();
                 }
 
                 if (!validateDepartments)

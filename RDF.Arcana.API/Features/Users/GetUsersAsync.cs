@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using RDF.Arcana.API.Common.Pagination;
 using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Domain;
-using RDF.Arcana.API.Features.Setup.Role;
 
 namespace RDF.Arcana.API.Features.Users;
 
