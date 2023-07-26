@@ -2,5 +2,5 @@
 
 public class LocationAlreadyExist : System.Exception
 {
-    public LocationAlreadyExist() : base("Location not found"){}
+    public LocationAlreadyExist() : base("Location already exist"){}
 }
