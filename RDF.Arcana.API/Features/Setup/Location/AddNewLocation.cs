@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using RDF.Arcana.API.Data;
+using RDF.Arcana.API.Features.Setup.Location.Exception;
 
 namespace RDF.Arcana.API.Features.Setup.Location;
 
@@ -9,7 +10,6 @@ public class AddNewLocation
     public class AddNewLocationCommand : IRequest<Unit>
     {
         public string LocationName { get; set; }
-        public bool Status { get; set; }
     }
     
     public class Handler : IRequestHandler<AddNewLocationCommand, Unit>
@@ -24,25 +24,20 @@ public class AddNewLocation
         public async Task<Unit> Handle(AddNewLocationCommand request, CancellationToken cancellationToken)
         {
             var existingLocation =
-                await _context.Locations.SingleOrDefaultAsync(x => x.LocationName == request.LocationName,
+                await _context.Locations.FirstOrDefaultAsync(x => x.LocationName == request.LocationName,
                     cancellationToken);
-            if (existingLocation is not null)
+            if (existingLocation is null)
             {
-                existingLocation.IsActive = request.Status;
-                existingLocation.LocationName = existingLocation.LocationName;
-                _context.Locations.Attach(existingLocation).State = EntityState.Modified;
+                throw new NoLocationFoundException();
             }
-            else
-            {
-                var location = new Domain.Location
+           
+            var location = new Domain.Location
                 {
                     LocationName = request.LocationName,
-                    IsActive = request.Status,
+                    IsActive = true
                 };
 
-                await _context.Locations.AddAsync(location, cancellationToken);
-            }
-
+            await _context.Locations.AddAsync(location, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
             return Unit.Value;
         }

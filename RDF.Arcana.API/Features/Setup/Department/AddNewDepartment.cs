@@ -10,7 +10,6 @@ public class AddNewDepartment
     public class AddNewDepartmentCommand : IRequest<Unit>
     {
         public string DepartmentName { get; set; }
-        public bool IsActive { get; set; }
     }
     public class Handler : IRequestHandler<AddNewDepartmentCommand, Unit>
     {
@@ -30,20 +29,17 @@ public class AddNewDepartment
             
             if (validateDepartment is not null)
             {
-                validateDepartment.IsActive = request.IsActive;
-                _context.Departments.Attach(validateDepartment).State = EntityState.Modified;
+                throw new NoDepartmentFoundException();
                 
             }
-            else
+
+            var department = new Domain.Department
             {
-                var department = new Domain.Department
-                {
-                    DepartmentName = request.DepartmentName,
-                    IsActive = request.IsActive
-                };
-                await _context.Departments.AddAsync(department, cancellationToken);
-            }
+                DepartmentName = request.DepartmentName,
+                IsActive = true
+            };
             
+            await _context.Departments.AddAsync(department, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;

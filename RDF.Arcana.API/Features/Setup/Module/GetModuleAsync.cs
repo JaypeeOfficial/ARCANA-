@@ -1,5 +1,4 @@
-﻿using ELIXIR.DATA.DATA_ACCESS_LAYER.HELPERS;
-using MediatR;
+﻿using MediatR;
 using RDF.Arcana.API.Common.Pagination;
 
 namespace RDF.Arcana.API.Features.Setup.Module;

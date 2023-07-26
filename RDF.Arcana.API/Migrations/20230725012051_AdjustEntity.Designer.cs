@@ -11,8 +11,8 @@ using RDF.Arcana.API.Data;
 namespace RDF.Arcana.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230724102618_AdjustUserEntity")]
-    partial class AdjustUserEntity
+    [Migration("20230725012051_AdjustEntity")]
+    partial class AdjustEntity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -317,20 +317,12 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("product_category_name");
 
-                    b.Property<int>("ProductSubCategoryId")
-                        .HasColumnType("int")
-                        .HasColumnName("product_sub_category_id");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id")
                         .HasName("pk_product_categories");
-
-                    b.HasIndex("ProductSubCategoryId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_product_categories_product_sub_category_id");
 
                     b.ToTable("product_categories", (string)null);
                 });
@@ -350,6 +342,10 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("is_active");
 
+                    b.Property<int>("ProductCategoryId")
+                        .HasColumnType("int")
+                        .HasColumnName("product_category_id");
+
                     b.Property<string>("ProductSubCategoryName")
                         .HasColumnType("longtext")
                         .HasColumnName("product_sub_category_name");
@@ -360,6 +356,9 @@ namespace RDF.Arcana.API.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_product_sub_categories");
+
+                    b.HasIndex("ProductCategoryId")
+                        .HasDatabaseName("ix_product_sub_categories_product_category_id");
 
                     b.ToTable("product_sub_categories", (string)null);
                 });
@@ -469,7 +468,7 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("updated_at");
 
-                    b.Property<int>("UserRoleId")
+                    b.Property<int?>("UserRoleId")
                         .HasColumnType("int")
                         .HasColumnName("user_role_id");
 
@@ -574,16 +573,16 @@ namespace RDF.Arcana.API.Migrations
                     b.Navigation("MainMenu");
                 });
 
-            modelBuilder.Entity("RDF.Arcana.API.Domain.ProductCategory", b =>
+            modelBuilder.Entity("RDF.Arcana.API.Domain.ProductSubCategory", b =>
                 {
-                    b.HasOne("RDF.Arcana.API.Domain.ProductSubCategory", "ProductSubCategory")
-                        .WithOne("ProductCategory")
-                        .HasForeignKey("RDF.Arcana.API.Domain.ProductCategory", "ProductSubCategoryId")
+                    b.HasOne("RDF.Arcana.API.Domain.ProductCategory", "ProductCategory")
+                        .WithMany("ProductSubCategory")
+                        .HasForeignKey("ProductCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_product_categories_product_sub_categories_product_sub_catego");
+                        .HasConstraintName("fk_product_sub_categories_product_categories_product_category_id");
 
-                    b.Navigation("ProductSubCategory");
+                    b.Navigation("ProductCategory");
                 });
 
             modelBuilder.Entity("RDF.Arcana.API.Domain.User", b =>
@@ -617,8 +616,6 @@ namespace RDF.Arcana.API.Migrations
                     b.HasOne("RDF.Arcana.API.Domain.UserRoles", "UserRoles")
                         .WithOne("User")
                         .HasForeignKey("RDF.Arcana.API.Domain.User", "UserRoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
                         .HasConstraintName("fk_users_user_roles_user_role_id");
 
                     b.Navigation("Company");
@@ -645,9 +642,9 @@ namespace RDF.Arcana.API.Migrations
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("RDF.Arcana.API.Domain.ProductSubCategory", b =>
+            modelBuilder.Entity("RDF.Arcana.API.Domain.ProductCategory", b =>
                 {
-                    b.Navigation("ProductCategory");
+                    b.Navigation("ProductSubCategory");
                 });
 
             modelBuilder.Entity("RDF.Arcana.API.Domain.Role", b =>

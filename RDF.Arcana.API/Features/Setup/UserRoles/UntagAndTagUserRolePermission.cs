@@ -6,14 +6,14 @@ using EntityFrameworkQueryableExtensions = Microsoft.EntityFrameworkCore.EntityF
 
 namespace RDF.Arcana.API.Features.Setup.UserRoles;
 
-public class UpdateUserRolePermission
+public class UntagAndTagUserRolePermission
 {
-    public class UntagUserRoleCommand : IRequest<Unit>
+    public class UntagAndTagUserRoleCommand : IRequest<Unit>
     {
         public int UserRoleId { get; set; }
         public ICollection<string> Permissions { get; set; }
     }
-    public class Handler : IRequestHandler<UntagUserRoleCommand, Unit>
+    public class Handler : IRequestHandler<UntagAndTagUserRoleCommand, Unit>
     {
         private readonly DataContext _context;
 
@@ -22,10 +22,10 @@ public class UpdateUserRolePermission
             _context = context;
         }
 
-        public async Task<Unit> Handle(UntagUserRoleCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UntagAndTagUserRoleCommand request, CancellationToken cancellationToken)
         {
             var existingUseRole = await _context.UserRoles
-                .FirstOrDefaultAsync(x => x.Id == request.UserRoleId);
+                .FirstOrDefaultAsync(x => x.Id == request.UserRoleId, cancellationToken);
 
             if (existingUseRole is null)
             {

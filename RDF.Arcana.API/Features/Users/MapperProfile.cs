@@ -11,6 +11,7 @@ public static class MapperProfile
         {
             Fullname = user.Fullname,
             Username = user.Username,
+            Password = user.Password,
             CreatedAt = user.CreatedAt,
             IsActive = user.IsActive,
             CompanyName = user.Company.CompanyName,

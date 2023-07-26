@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using ELIXIR.DATA.DATA_ACCESS_LAYER.HELPERS;
+using RDF.Arcana.API.Common.Pagination;
 
 namespace RDF.Arcana.API.Common.Extension
 {

@@ -11,11 +11,11 @@ namespace RDF.Arcana.API.Features.Users;
 
 public class UserController : ControllerBase
 {
-    private readonly IMediator _mediatR;
+    private readonly IMediator _mediatr;
 
-    public UserController(IMediator mediatR)
+    public UserController(IMediator mediatr)
     {
-        _mediatR = mediatR;
+        _mediatr = mediatr;
     }
 
     [HttpPost]
@@ -25,7 +25,7 @@ public class UserController : ControllerBase
         var response = new QueryOrCommandResult<object>();
         try
         {
-            var result = await _mediatR.Send(command);
+            var result = await _mediatr.Send(command);
             response.Success = true;
             response.Data = result;
             response.Messages.Add("User added successfully");
@@ -45,7 +45,7 @@ public class UserController : ControllerBase
         var response = new QueryOrCommandResult<object>();
         try
         {
-            var users = await _mediatR.Send(query);
+            var users = await _mediatr.Send(query);
             
             Response.AddPaginationHeader(
                 users.CurrentPage,
@@ -79,6 +79,69 @@ public class UserController : ControllerBase
             response.Status = StatusCodes.Status200OK;
             response.Success = true;
             response.Messages.Add(e.Message);
+            return Conflict(response);
+        }
+    }
+
+    [HttpPatch("ChangeUserPassword/{id:int}")]
+    public async Task<IActionResult> ChangeUserPassword([FromRoute] int id, [FromBody] ChangeUserPassword.ChangeUserPasswordCommand command)
+    {
+        var response = new QueryOrCommandResult<object>();
+        try
+        {
+            command.UserId = id;
+            await _mediatr.Send(command);
+            response.Messages.Add("Password has been updated successfully");
+            response.Status = StatusCodes.Status200OK;
+            response.Success = true;
+            return Ok(response);
+        }
+        catch (System.Exception e)
+        {
+            response.Messages.Add(e.Message);
+            response.Status = StatusCodes.Status409Conflict;
+            return Conflict(response);
+        }
+    }
+
+    [HttpPut("UpdateUser/{id:int}")]
+    public async Task<IActionResult> UpdateUser([FromRoute] int id, [FromBody]UpdateUser.UpdateUserCommand command)
+    {
+        var response = new QueryOrCommandResult<object>();
+        try
+        {
+            command.UserId = id;
+            await _mediatr.Send(command);
+            response.Success = true;
+            response.Status = StatusCodes.Status200OK;
+            response.Messages.Add("User has been updated successfully");
+            return Ok(response);
+        }
+        catch (System.Exception e)
+        {
+            response.Status = StatusCodes.Status409Conflict;
+            response.Messages.Add(e.Message);
+            return Conflict(response);
+        }
+    }
+
+    [HttpPatch("UpdateUserStatus/{id}")]
+    public async Task<IActionResult> UpdateUserStatus([FromRoute] int id, [FromBody]UpdateUserStatus.UpdateUserStatusCommand command)
+    {
+        var response = new QueryOrCommandResult<object>();
+        try
+        {
+            command.UserId = id;
+            await _mediatr.Send(command);
+            response.Messages.Add("User status has been updated successfully");
+            response.Status = StatusCodes.Status200OK;
+            response.Success = true;
+            return Ok(response);
+        }
+        catch (System.Exception e)
+        {
+            response.Status = StatusCodes.Status200OK;
+            response.Success = true;
             return Conflict(response);
         }
     }

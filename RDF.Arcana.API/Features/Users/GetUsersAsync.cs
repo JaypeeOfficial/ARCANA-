@@ -1,5 +1,4 @@
-﻿using ELIXIR.DATA.DATA_ACCESS_LAYER.HELPERS;
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using RDF.Arcana.API.Common.Pagination;
 using RDF.Arcana.API.Data;
@@ -20,6 +19,7 @@ public class GetUsersAsync
     {
         public string Fullname { get; set; }
         public string Username { get; set; }
+        public string Password { get; set; }
         public DateTime CreatedAt { get; set; }
         public bool IsActive { get; set; }
         public string CompanyName { get; set; }

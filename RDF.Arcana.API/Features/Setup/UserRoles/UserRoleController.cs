@@ -39,12 +39,13 @@ public class UserRoleController : ControllerBase
         }
     }
 
-    [HttpPut("UpdateUserRole")]
-    public async Task<IActionResult> UpdateUserRole(UpdateUserRole.UpdateUserRoleCommand command)
+    [HttpPut("UpdateUserRole/{id:int}")]
+    public async Task<IActionResult> UpdateUserRole([FromRoute] int id, [FromBody]UpdateUserRole.UpdateUserRoleCommand command)
     {
         var response = new QueryOrCommandResult<object>();
         try
         {
+            command.UserRoleId = id;
             await _mediator.Send(command);
             response.Status = StatusCodes.Status200OK;
             response.Success = true;
@@ -59,12 +60,13 @@ public class UserRoleController : ControllerBase
         }
     }
 
-    [HttpPatch("UpdateUserRoleStatus")]
-    public async Task<IActionResult> UpdateUserRoleStatus(UpdateUserRoleStatus.UpdateUserRoleStatusCommand command)
+    [HttpPatch("UpdateUserRoleStatus/{id:int}")]
+    public async Task<IActionResult> UpdateUserRoleStatus([FromRoute] int id, [FromBody]UpdateUserRoleStatus.UpdateUserRoleStatusCommand command)
     {
         var response = new QueryOrCommandResult<object>();
         try
         {
+            command.UserRoleId = id;
             await _mediator.Send(command);
             response.Status = StatusCodes.Status200OK;
             response.Success = true;
@@ -79,12 +81,13 @@ public class UserRoleController : ControllerBase
         }
     }
 
-    [HttpPut("UntagUserRole")]
-    public async Task<IActionResult> UntagUserRolePermission(UpdateUserRolePermission.UntagUserRoleCommand command)
+    [HttpPut("UntagUserRole/{id:int}")]
+    public async Task<IActionResult> UntagUserRolePermission([FromRoute] int id, [FromBody]UntagAndTagUserRolePermission.UntagAndTagUserRoleCommand command)
     {
         var response = new QueryOrCommandResult<object>();
         try
         {
+            command.UserRoleId = id;
             await _mediator.Send(command);
             response.Status = StatusCodes.Status200OK;
             response.Success = true;
