@@ -10,9 +10,9 @@ public static class ItemsMappingExtension
             Id = items.Id,
             ItemCode = items.ItemCode,
             ItemDescription = items.ItemDescription,
-            UomId = items.UomId,
-            ProductCategoryId = items.ProductCategoryId,
-            MeatTypeId = items.MeatTypeId,
+            Uom = items.Uom?.UomCode,
+            ProductCategory = items.ProductCategory?.ProductCategoryName,
+            MeatType = items.MeatType?.MeatTypeName,
             IsActive = items.IsActive,
             AddedBy = items.AddedBy,
             ModifiedBy = items.ModifiedBy

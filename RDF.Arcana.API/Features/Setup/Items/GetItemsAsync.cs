@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using RDF.Arcana.API.Common.Pagination;
 using RDF.Arcana.API.Data;
 
@@ -17,9 +18,9 @@ public class GetItemsAsync
             public int Id { get; set; }
             public string ItemCode { get; set; }
             public string ItemDescription { get; set; }
-            public int UomId { get; set; }
-            public int ProductCategoryId { get; set; }
-            public int MeatTypeId { get; set; }
+            public string Uom { get; set; }
+            public string ProductCategory { get; set; }
+            public string MeatType { get; set; }
             public bool IsActive { get; set; }
             public string AddedBy { get; set; }
             public string ModifiedBy { get; set; }
@@ -36,7 +37,10 @@ public class GetItemsAsync
     
             public async Task<PagedList<GetItemsAsyncResult>> Handle(GetItemsAsyncQuery request, CancellationToken cancellationToken)
             {
-                IQueryable<Domain.Items> items = _context.Items;
+                IQueryable<Domain.Items> items = _context.Items
+                    .Include(x => x.Uom)
+                    .Include(x => x.MeatType)
+                    .Include(x => x.ProductCategory);
     
                 if (!string.IsNullOrEmpty(request.Search))
                 {

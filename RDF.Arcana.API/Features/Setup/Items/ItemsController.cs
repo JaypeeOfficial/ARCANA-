@@ -65,7 +65,7 @@ public class ItemsController : ControllerBase
         {
             command.ItemCode = itemCode;
             await _mediator.Send(command);
-            response.Messages.Add("Successfully Fetch Data");
+            response.Messages.Add("ItemCode has been updated successfully");
             response.Status = StatusCodes.Status200OK;
             response.Success = true;
             return Ok(response);
