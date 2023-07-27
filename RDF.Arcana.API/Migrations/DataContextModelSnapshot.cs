@@ -154,6 +154,14 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
+                    b.Property<string>("AddedBy")
+                        .HasColumnType("longtext")
+                        .HasColumnName("added_by");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("is_active");
@@ -170,6 +178,10 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("meat_type_id");
 
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("longtext")
+                        .HasColumnName("modified_by");
+
                     b.Property<int>("ProductCategoryId")
                         .HasColumnType("int")
                         .HasColumnName("product_category_id");
@@ -177,6 +189,10 @@ namespace RDF.Arcana.API.Migrations
                     b.Property<int>("UomId")
                         .HasColumnType("int")
                         .HasColumnName("uom_id");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("updated_at");
 
                     b.HasKey("Id")
                         .HasName("pk_items");

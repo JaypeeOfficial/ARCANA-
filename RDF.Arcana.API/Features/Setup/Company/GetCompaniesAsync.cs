@@ -45,13 +45,7 @@ public class GetCompaniesAsync
                    companies = companies.Where(x => x.IsActive == request.Status);
                }
            
-               var result = companies.Select(x => new GetCompaniesResult
-               {
-                   CompanyName = x.CompanyName,
-                   CreatedAt = x.CreatedAt,
-                   UpdatedAt = x.UpdatedAt,
-                   IsActive = x.IsActive
-               });
+               var result = companies.Select(x => x.ToGetAllCompaniesResult());
                
                return await PagedList<GetCompaniesResult>.CreateAsync(result, request.PageNumber, request.PageSize);
            }
