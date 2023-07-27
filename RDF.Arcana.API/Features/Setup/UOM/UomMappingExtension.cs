@@ -9,6 +9,7 @@ public static class UomMappingExtension
     {
         return new GetUomAsync.GetUomQueryResult
         {
+            Id = uom.Id,
             UomCode = uom.UomCode,
             UomDescription = uom.UomDescription,
             CreatedAt = uom.CreatedAt,

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RDF.Arcana.API.Data;
 
@@ -10,9 +11,11 @@ using RDF.Arcana.API.Data;
 namespace RDF.Arcana.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230727005801_AddDiscountEntity")]
+    partial class AddDiscountEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -330,43 +333,6 @@ namespace RDF.Arcana.API.Migrations
                         .HasDatabaseName("ix_product_sub_categories_product_category_id");
 
                     b.ToTable("product_sub_categories", (string)null);
-                });
-
-            modelBuilder.Entity("RDF.Arcana.API.Domain.TermDays", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    b.Property<string>("AddedBy")
-                        .HasColumnType("longtext")
-                        .HasColumnName("added_by");
-
-                    b.Property<DateTime>("CreateAt")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("create_at");
-
-                    b.Property<int>("Days")
-                        .HasColumnType("int")
-                        .HasColumnName("days");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("is_active");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("longtext")
-                        .HasColumnName("modified_by");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("updated_at");
-
-                    b.HasKey("Id")
-                        .HasName("pk_term_days");
-
-                    b.ToTable("term_days", (string)null);
                 });
 
             modelBuilder.Entity("RDF.Arcana.API.Domain.Uom", b =>

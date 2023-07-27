@@ -9,6 +9,7 @@ public static class UserRoleMappingExtension
     {
         return new GetUserRolesAsync.GetUserRoleAsyncResult()
         {
+            Id = userRoles.Id,
             RoleName = userRoles.RoleName,
             CreatedAt = userRoles.CreatedAt,
             IsActive = userRoles.IsActive,

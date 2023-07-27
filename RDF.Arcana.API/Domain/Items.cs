@@ -10,6 +10,10 @@ public class Items : BaseEntity
     public int ProductCategoryId { get; set; }
     public int MeatTypeId { get; set; }
     public bool IsActive { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime UpdatedAt { get; set; }
+    public string AddedBy { get; set; }
+    public string ModifiedBy { get; set; }
     public ProductCategory ProductCategory { get; set; }
     public Uom Uom { get; set; }
     public MeatType MeatType { get; set; }

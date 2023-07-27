@@ -47,7 +47,6 @@
       <Folder Include="Features\Authenticate\Exception\" />
       <Folder Include="Features\Items\" />
       <Folder Include="Features\Setup\Customer\" />
-      <Folder Include="Features\Setup\Items\Exceptions\" />
     </ItemGroup>
 
 </Project>

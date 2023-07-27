@@ -15,6 +15,7 @@ public class GetUomAsync
 
     public class GetUomQueryResult
     {
+        public int Id { get; set; }
         public string UomCode { get; set; }
         public string UomDescription { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;

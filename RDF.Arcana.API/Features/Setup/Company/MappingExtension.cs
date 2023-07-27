@@ -8,6 +8,7 @@ public static class MappingExtension
     {
         return new GetCompaniesAsync.GetCompaniesResult
         {
+            Id = company.Id,
             CompanyName = company.CompanyName,
             CreatedAt = company.CreatedAt,
             UpdatedAt = company.UpdatedAt,

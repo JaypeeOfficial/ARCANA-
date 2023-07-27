@@ -15,6 +15,7 @@ public class GetUserRolesAsync
 
     public class GetUserRoleAsyncResult
     {
+        public int Id { get; set; }
         public string RoleName { get; set; }
         public ICollection<string> Permissions { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;

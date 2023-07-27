@@ -15,7 +15,7 @@ public class GetAllLocationAsync
 
     public class GetAllLocationAsyncResult
     {
-        public int LocationId { get; set; }
+        public int Id { get; set; }
         public string LocationName { get; set; }
         public List<string> Users { get; set; }
         public string CreatedAt { get; set; }

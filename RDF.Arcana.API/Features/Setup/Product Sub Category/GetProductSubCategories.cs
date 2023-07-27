@@ -16,6 +16,7 @@ public class GetProductSubCategories
 
     public class GetProductSubCategoriesResult
     {
+        public int Id { get; set; }
         public string ProductSubCategoryName { get; set; }
         public string ProductCategoryName { get; set; }
         public DateTime CreatedAt { get; set; } 

@@ -7,6 +7,7 @@ public static class DepartmentMapperExtension
     {
         return new GetDepartmentAsync.GetDepartmentAsyncResult
         {
+            Id = department.Id,
             DepartmentName = department.DepartmentName,
             CreatedAt = department.CreatedAt,
             UpdatedAt = department.UpdatedAt,

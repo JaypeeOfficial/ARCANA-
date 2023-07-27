@@ -7,6 +7,7 @@ public static class LocationMappingExtension
     {
         return new GetAllLocationAsync.GetAllLocationAsyncResult
         {
+            Id = location.Id,
             LocationName = location.LocationName,
             CreatedAt = location.CreatedAt.ToString("MM/dd/yyyy"),
             UpdatedAt = location.UpdatedAt.ToString(),

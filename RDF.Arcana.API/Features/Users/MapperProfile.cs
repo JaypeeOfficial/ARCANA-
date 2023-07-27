@@ -9,6 +9,7 @@ public static class MapperProfile
     {
         return new GetUsersAsync.GetUserAsyncQueryResult
         {
+            Id = user.Id,
             Fullname = user.Fullname,
             Username = user.Username,
             Password = user.Password,

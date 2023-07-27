@@ -37,7 +37,7 @@
 //         public Task<PagedList<GetMeatTypeQueryResult>> Handle(GetMeatTypeQuery request, CancellationToken cancellationToken)
 //         {
 //             IQueryable<MeatType> meatTypes = _context.MeatTypes;
-//             retur
+//             return awa Task<PagedList<GetMeatTypeQueryResult>>()
 //         }
 //     }
 // }

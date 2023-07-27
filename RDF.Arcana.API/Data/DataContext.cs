@@ -22,6 +22,8 @@ public class DataContext : DbContext
     public virtual DbSet<ProductSubCategory> ProductSubCategories { get; set; }
     public virtual DbSet<Uom> Uoms { get; set; }
     public virtual DbSet<UserRoles> UserRoles { get; set; }
+    public virtual DbSet<Discount> Discounts { get; set; }
+    public virtual DbSet<TermDays> TermDays { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
