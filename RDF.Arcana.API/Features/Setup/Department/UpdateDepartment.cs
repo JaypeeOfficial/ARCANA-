@@ -1,16 +1,27 @@
-﻿using RDF.Arcana.API.Data;
-using RDF.Arcana.API.Features.Setup.Company;
+﻿using Microsoft.AspNetCore.Mvc;
+using RDF.Arcana.API.Common;
+using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Department.Exception;
-using RDF.Arcana.API.Features.Setup.Product_Sub_Category.Exeptions;
 
 namespace RDF.Arcana.API.Features.Setup.Department;
 
-public class UpdateDepartment
+[Route("api/Department")]
+[ApiController]
+
+public class UpdateDepartment : ControllerBase
 {
-     public class UpdateDepartmentCommand : IRequest<Unit>
+    private readonly IMediator _mediator;
+
+    public UpdateDepartment(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
+    public class UpdateDepartmentCommand : IRequest<Unit>
     {
         public int DepartmentId { get; set; }
         public string DepartmentName { get; set; }
+        public string ModifiedBy { get; set; }
     }
      
      public class Handler : IRequestHandler<UpdateDepartmentCommand, Unit>
@@ -34,6 +45,7 @@ public class UpdateDepartment
              if (validateDepartmentName is null)
              {
                  validateDepartment.DepartmentName = request.DepartmentName;
+                 validateDepartment.ModifiedBy = request.ModifiedBy;
                  validateDepartment.UpdatedAt = DateTime.Now;
 
                  await _context.SaveChangesAsync(cancellationToken);
@@ -52,6 +64,25 @@ public class UpdateDepartment
              }
              
              return Unit.Value;
+         }
+     }
+     
+     [HttpPut("UpdateDepartment")]
+     public async Task<IActionResult> Update(UpdateDepartment.UpdateDepartmentCommand command)
+     {
+         var response = new QueryOrCommandResult<object>();
+         try
+         {
+             command.ModifiedBy = User.Identity?.Name;
+             await _mediator.Send(command);
+             response.Success = true;
+             response.Messages.Add("Department successfully updated");
+             return Ok(response);
+         }
+         catch (System.Exception e)
+         {
+             response.Messages.Add(e.Message);
+             return Conflict(response);
          }
      }
 }

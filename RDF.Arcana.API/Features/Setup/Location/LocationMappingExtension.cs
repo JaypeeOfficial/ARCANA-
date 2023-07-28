@@ -9,10 +9,10 @@ public static class LocationMappingExtension
         {
             Id = location.Id,
             LocationName = location.LocationName,
+            Users = location.Users.Select(x => x.Fullname),
             CreatedAt = location.CreatedAt.ToString("MM/dd/yyyy"),
             UpdatedAt = location.UpdatedAt.ToString(),
-            IsActive = location.IsActive,
-            Users = location.Users.Select(x => x.Fullname).ToList()
+            IsActive = location.IsActive
         };
     }
 }

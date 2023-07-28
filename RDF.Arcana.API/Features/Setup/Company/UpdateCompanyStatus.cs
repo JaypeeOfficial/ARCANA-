@@ -1,14 +1,26 @@
-﻿using RDF.Arcana.API.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using RDF.Arcana.API.Common;
+using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Company.Exceptions;
 
 namespace RDF.Arcana.API.Features.Setup.Company;
 
-public class UpdateCompanyStatus
+[Route("api/[controller]")]
+[ApiController]
+
+public class UpdateCompanyStatus : ControllerBase
 {
+    private readonly IMediator _mediator;
+
+    public UpdateCompanyStatus(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
     public class UpdateCompanyStatusCommand : IRequest<Unit>
     {
         public int CompanyId { get; set; }
-        public bool IsActive { get; set; }
+        public string ModifiedBy { get; set; }
     }
 
     public class Handler : IRequestHandler<UpdateCompanyStatusCommand, Unit>
@@ -30,9 +42,34 @@ public class UpdateCompanyStatus
                 throw new NoCompanyFoundException();
             }
 
-            validateCompany.IsActive = request.IsActive;
+            validateCompany.IsActive = !validateCompany.IsActive;
+            validateCompany.ModifiedBy = request.ModifiedBy;
             await _context.SaveChangesAsync(cancellationToken);
             return Unit.Value;
+        }
+    }
+    
+    [HttpPatch("UpdateCompanyStatus/{id:int}")]
+    public async Task<IActionResult> UpdateStatus([FromRoute] int id)
+    {
+        var response = new QueryOrCommandResult<object>();
+        try
+        {
+            var command = new UpdateCompanyStatusCommand
+            {
+                CompanyId = id,
+                ModifiedBy = User.Identity?.Name
+            };
+            await _mediator.Send(command);
+            response.Success = true;
+            response.Messages.Add("Successfully updated the status");
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            response.Success = false;
+            response.Messages.Add(e.Message);
+            return Conflict(response);
         }
     }
 }

@@ -1,11 +1,24 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using RDF.Arcana.API.Common;
+using RDF.Arcana.API.Common.Extension;
 using RDF.Arcana.API.Common.Pagination;
 using RDF.Arcana.API.Data;
 
 namespace RDF.Arcana.API.Features.Setup.Discount;
 
-public class GetDiscountsAsync
+[Route("api/[controller]")]
+[ApiController]
+
+public class GetDiscountsAsync : ControllerBase
 {
+    private readonly IMediator _mediator;
+
+    public GetDiscountsAsync(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
     public class GetDiscountAsyncQuery : UserParams, IRequest<PagedList<GetDiscountAsyncQueryResult>>
     {
         public string Search { get; set; }
@@ -51,6 +64,49 @@ public class GetDiscountsAsync
             var result = discounts.Select(x => x.ToGetDiscountAsyncQueryResult());
             return await PagedList<GetDiscountAsyncQueryResult>.CreateAsync(result, request.PageNumber,
                 request.PageSize);
+        }
+    }
+    
+    [HttpGet("GetDiscount")]
+    public async Task<IActionResult> GetAllDiscount([FromQuery]GetDiscountsAsync.GetDiscountAsyncQuery query)
+    {
+        var response = new QueryOrCommandResult<object>();
+        try
+        {
+            var discount =  await _mediator.Send(query);
+            
+            Response.AddPaginationHeader(
+                discount.CurrentPage,
+                discount.PageSize,
+                discount.TotalCount,
+                discount.TotalPages,
+                discount.HasPreviousPage,
+                discount.HasNextPage
+            );
+
+            var result = new QueryOrCommandResult<object>
+            {
+                Success = true,
+                Status = StatusCodes.Status200OK,
+                Data = new
+                {
+                    discount,
+                    discount.CurrentPage,
+                    discount.PageSize,
+                    discount.TotalCount,
+                    discount.TotalPages,
+                    discount.HasPreviousPage,
+                    discount.HasNextPage
+                }
+            };
+            result.Messages.Add("Successfully fetch data");
+            return Ok(result);
+        }
+        catch (System.Exception e)
+        {
+            response.Messages.Add(e.Message);
+            response.Status = StatusCodes.Status409Conflict;
+            return Conflict(response);
         }
     }
 }

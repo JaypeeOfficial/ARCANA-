@@ -1,10 +1,22 @@
-﻿using RDF.Arcana.API.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using RDF.Arcana.API.Common;
+using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Discount.Exception;
 
 namespace RDF.Arcana.API.Features.Setup.Discount;
 
-public class AddNewDiscount
+[Route("api/Discount")]
+[ApiController]
+
+public class AddNewDiscount : ControllerBase
 {
+    private readonly IMediator _mediator;
+
+    public AddNewDiscount(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
     public class AddNewDiscountCommand : IRequest<Unit>
     {
         public decimal LowerBound { get; set; }
@@ -48,6 +60,26 @@ public class AddNewDiscount
             await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
+        }
+    }
+    
+    [HttpPost("AddNewDiscount")]
+    public async Task<IActionResult> Add(AddNewDiscount.AddNewDiscountCommand command)
+    {
+        var response = new QueryOrCommandResult<object>();
+        try
+        {
+            await _mediator.Send(command);
+            response.Status = StatusCodes.Status200OK;
+            response.Success = true;
+            response.Messages.Add("Discount has been added successfully");
+            return Ok(response);
+        }
+        catch (System.Exception e)
+        {
+            response.Messages.Add(e.Message);
+            response.Status = StatusCodes.Status409Conflict;
+            return Ok(response);
         }
     }
 }

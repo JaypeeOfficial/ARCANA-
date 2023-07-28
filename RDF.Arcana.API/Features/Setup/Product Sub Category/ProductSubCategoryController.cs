@@ -61,15 +61,15 @@ public class ProductSubCategoryController : Controller
       }
    }
 
-   [HttpPatch("UpdateProductSubCategoryStatus/{productSubCategoryId:int}")]
-    public async Task<IActionResult> UpdateProductSubCategoryStatus([FromRoute]int productSubCategoryId)
+   [HttpPatch("UpdateProductSubCategoryStatus/{id:int}")]
+    public async Task<IActionResult> UpdateProductSubCategoryStatus([FromRoute]int id)
     {
         var response = new QueryOrCommandResult<object>();
     
         try
         {
             var command = new UpdateProductSubCategoryStatus.UpdateProductSubCategoryStatusCommand {
-                ProductSubCategoryId = productSubCategoryId
+                ProductSubCategoryId = id
             };
     
             await _mediator.Send(command);

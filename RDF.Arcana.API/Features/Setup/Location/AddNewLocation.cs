@@ -1,13 +1,26 @@
-﻿using RDF.Arcana.API.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using RDF.Arcana.API.Common;
+using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Location.Exception;
 
 namespace RDF.Arcana.API.Features.Setup.Location;
 
-public class AddNewLocation
+[Route("api/Location")]
+[ApiController]
+
+public class AddNewLocation : ControllerBase
 {
+    private readonly IMediator _mediator;
+
+    public AddNewLocation(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
     public class AddNewLocationCommand : IRequest<Unit>
     {
         public string LocationName { get; set; }
+        public string AddedBy { get; set; }
     }
     
     public class Handler : IRequestHandler<AddNewLocationCommand, Unit>
@@ -32,12 +45,34 @@ public class AddNewLocation
             var location = new Domain.Location
                 {
                     LocationName = request.LocationName,
+                    AddedBy = request.AddedBy,
                     IsActive = true
                 };
 
             await _context.Locations.AddAsync(location, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
             return Unit.Value;
+        }
+    }
+    
+    [HttpPost("AddNewLocation")]
+    public async Task<IActionResult> Add(AddNewLocationCommand command)
+    {
+        var response = new QueryOrCommandResult<object>();
+        try
+        {
+            command.AddedBy = User.Identity?.Name;
+            await _mediator.Send(command);
+            response.Success = true;
+            response.Messages.Add($"Location {command.LocationName} successfully added");
+            response.Status = StatusCodes.Status200OK;
+            return Ok(response);
+
+        }
+        catch (System.Exception e)
+        {
+            response.Messages.Add(e.Message);
+            return Conflict(response);
         }
     }
 }

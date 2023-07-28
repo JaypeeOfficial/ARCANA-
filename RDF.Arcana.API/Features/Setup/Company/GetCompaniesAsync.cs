@@ -1,10 +1,23 @@
-﻿using RDF.Arcana.API.Common.Pagination;
+﻿using Microsoft.AspNetCore.Mvc;
+using RDF.Arcana.API.Common;
+using RDF.Arcana.API.Common.Extension;
+using RDF.Arcana.API.Common.Pagination;
 using RDF.Arcana.API.Data;
 
 namespace RDF.Arcana.API.Features.Setup.Company;
 
-public class GetCompaniesAsync
+[Route("api/Companies")]
+[ApiController]
+
+public class GetCompaniesAsync : ControllerBase
 {
+    private readonly IMediator _mediator;
+
+    public GetCompaniesAsync(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
     public class GetCompaniesQuery : UserParams, IRequest<PagedList<GetCompaniesResult>>
     {
         public bool? Status { get; set; }
@@ -48,5 +61,45 @@ public class GetCompaniesAsync
                return await PagedList<GetCompaniesResult>.CreateAsync(result, request.PageNumber, request.PageSize);
            }
      }
-    
+     
+     [HttpGet("GetAllCompanies")]
+     public async Task<IActionResult> GetAllCompanies([FromQuery]GetCompaniesAsync.GetCompaniesQuery request)
+     {
+         var response = new QueryOrCommandResult<object>();
+      
+         try
+         {
+             var companies = await _mediator.Send(request);
+             Response.AddPaginationHeader(
+                 companies.CurrentPage,
+                 companies.PageSize,
+                 companies.TotalCount,
+                 companies.TotalPages,
+                 companies.HasPreviousPage,
+                 companies.HasNextPage
+             );
+             var results = new QueryOrCommandResult<object>
+             {
+                 Success = true,
+                 Data = new
+                 {
+                     companies,
+                     companies.CurrentPage,
+                     companies.PageSize,
+                     companies.TotalCount,
+                     companies.TotalPages,
+                     companies.HasPreviousPage,
+                     companies.HasNextPage
+                 },
+                 Status = StatusCodes.Status200OK
+             };
+             results.Messages.Add("Successfully Fetch");
+             return Ok(results);
+         }
+         catch (Exception e)
+         {
+             response.Status = StatusCodes.Status409Conflict;
+             return Conflict(e.Message);
+         }
+     }
 }

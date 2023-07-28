@@ -1,10 +1,22 @@
-﻿using RDF.Arcana.API.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using RDF.Arcana.API.Common;
+using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Discount.Exception;
 
 namespace RDF.Arcana.API.Features.Setup.Discount;
 
-public class UpdateDiscount
+[Route("api/[controller]")]
+[ApiController]
+
+public class UpdateDiscount : ControllerBase
 {
+    private readonly IMediator _mediator;
+
+    public UpdateDiscount(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
     public class UpdateDiscountCommand : IRequest<Unit>
     {
         public int Id { get; set; }
@@ -23,8 +35,8 @@ public class UpdateDiscount
         {
             _context = context;
         }
-        
-       public async Task<Unit> Handle(UpdateDiscountCommand request, CancellationToken cancellationToken)
+
+        public async Task<Unit> Handle(UpdateDiscountCommand request, CancellationToken cancellationToken)
         {
             var discount = await _context.Discounts.FindAsync(request.Id);
 
@@ -33,7 +45,7 @@ public class UpdateDiscount
 
             var overlapExists = await _context.Discounts
                 .Where(x => x.Id != request.Id)
-                .AnyAsync(x => (x.LowerBound <= request.LowerBound && x.UpperBound >= request.LowerBound) || 
+                .AnyAsync(x => (x.LowerBound <= request.LowerBound && x.UpperBound >= request.LowerBound) ||
                                (x.LowerBound <= request.UpperBound && x.UpperBound >= request.UpperBound) ||
                                (x.LowerBound >= request.LowerBound && x.UpperBound <= request.UpperBound),
                     cancellationToken);
@@ -51,6 +63,28 @@ public class UpdateDiscount
             await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
+        }
+    }
+    
+    [HttpPut("UpdateDiscount/{id:int}")]
+    public async Task<IActionResult> Update([FromRoute] int id,
+        [FromBody] UpdateDiscount.UpdateDiscountCommand command)
+    {
+        var response = new QueryOrCommandResult<object>();
+        try
+        {
+            command.Id = id;
+            await _mediator.Send(command);
+            response.Status = StatusCodes.Status200OK;
+            response.Messages.Add("Discount has been successfully updated");
+            response.Success = true;
+            return Ok(response);
+        }
+        catch (System.Exception e)
+        {
+            response.Status = StatusCodes.Status409Conflict;
+            response.Messages.Add(e.Message);
+            return Conflict(response);
         }
     }
 }

@@ -1,12 +1,25 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using RDF.Arcana.API.Common;
+using RDF.Arcana.API.Common.Extension;
 using RDF.Arcana.API.Common.Pagination;
 using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Department.Exception;
 
 namespace RDF.Arcana.API.Features.Setup.Department;
 
-public class GetDepartmentAsync
+[Route("api/Department")]
+[ApiController]
+
+public class GetDepartmentAsync : ControllerBase
 {
+    private readonly IMediator _mediator;
+
+    public GetDepartmentAsync(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
     public class GetDepartmentAsyncQuery : UserParams, IRequest<PagedList<GetDepartmentAsyncResult>>
     {
         public bool? Status { get; set; }
@@ -51,6 +64,45 @@ public class GetDepartmentAsync
 
             return await PagedList<GetDepartmentAsyncResult>.CreateAsync(result, request.PageNumber, request.PageSize);
 
+        }
+    }
+    
+    [HttpGet("GetAllDepartment", Name = "GetAllDepartment")]
+    public async Task<IActionResult> GetAllDepartmentByStatus([FromQuery]
+        GetDepartmentAsyncQuery command)
+    {
+        try
+        {
+            var department = await _mediator.Send(command);
+
+            Response.AddPaginationHeader(
+                department.CurrentPage,
+                department.PageSize,
+                department.TotalCount,
+                department.TotalPages,
+                department.HasPreviousPage,
+                department.HasNextPage
+            );
+
+            var results = new QueryOrCommandResult<object>
+            {
+                Success = true,
+                Data = new
+                {
+                    department,
+                    department.CurrentPage,
+                    department.PageSize,
+                    department.TotalCount,
+                    department.TotalPages,
+                    department.HasPreviousPage,
+                    department.HasNextPage
+                }
+            };
+            return Ok(results);
+        }
+        catch (System.Exception e)
+        {
+            return Conflict(e.Message);
         }
     }
 }

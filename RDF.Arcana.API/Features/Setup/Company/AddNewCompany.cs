@@ -1,16 +1,30 @@
 ﻿using System.Reflection.Metadata;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Company.Exceptions;
 using RDF.Arcana.API.Features.Users;
 
 namespace RDF.Arcana.API.Features.Setup.Company;
 
-public class AddNewCompany
+[Route("api/Company")]
+[ApiController]
+
+public class AddNewCompany : ControllerBase
 {
+
+    private readonly IMediator _mediator;
+
+    public AddNewCompany(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
+
     public class AddNewCompanyCommand : IRequest<Unit>
     {
         public string CompanyName { get; set; }
+        public string AddedBy { get; set; }
     }
 
     public class Handler : IRequestHandler<AddNewCompanyCommand, Unit>
@@ -37,6 +51,7 @@ public class AddNewCompany
             var company = new Domain.Company
             {
                 CompanyName = command.CompanyName,
+                AddedBy = command.AddedBy,
                 IsActive = true
             };
 
@@ -44,6 +59,23 @@ public class AddNewCompany
             await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
+        }
+    }
+    
+    [HttpPost]
+    [Route("AddNewCompany")]
+    public async Task<IActionResult> AddCompany(AddNewCompanyCommand command)
+    {
+        try
+        {
+            command.AddedBy = User.Identity?.Name;
+            await _mediator.Send(command);
+            return Ok("Successfully added!");
+                
+        }
+        catch (Exception e)
+        {
+            return Conflict(e.Message);
         }
     }
 }

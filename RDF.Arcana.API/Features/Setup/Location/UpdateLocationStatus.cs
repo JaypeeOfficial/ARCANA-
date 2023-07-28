@@ -1,13 +1,27 @@
-﻿using RDF.Arcana.API.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using RDF.Arcana.API.Common;
+using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Location.Exception;
+
 
 namespace RDF.Arcana.API.Features.Setup.Location;
 
-public class UpdateLocationStatus
+[Route("api/Location")]
+[ApiController]
+
+public class UpdateLocationStatus : ControllerBase
 {
+    private readonly IMediator _mediator;
+
+    public UpdateLocationStatus(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
     public class UpdateLocationStatusCommand : IRequest<Unit>
     {
         public int LocationId { get; set; }
+        public string ModifiedBy { get; set; }
     }
     public class Handler : IRequestHandler<UpdateLocationStatusCommand, Unit>
     {
@@ -30,8 +44,32 @@ public class UpdateLocationStatus
             }
 
             validateLocation.IsActive = !validateLocation.IsActive;
+            validateLocation.ModifiedBy = request.ModifiedBy;
+            validateLocation.UpdatedAt = DateTime.Now;
             await _context.SaveChangesAsync(cancellationToken);
             return Unit.Value;
         }
     }
+    [HttpPatch("UpdateLocationStatus/{id:int}")]
+    public async Task<IActionResult> Update([FromRoute] int id)
+    {
+        var response = new QueryOrCommandResult<object>();
+        try
+        {
+            var command = new UpdateLocationStatus.UpdateLocationStatusCommand
+            {
+                LocationId = id
+            };
+            await _mediator.Send(command);
+            response.Success = true;
+            response.Messages.Add("Successfully updated the status");
+            return Ok(response);
+        }
+        catch (System.Exception e)
+        {
+            response.Messages.Add(e.Message);
+            return Conflict(response);
+        }      
+    }
+
 }
