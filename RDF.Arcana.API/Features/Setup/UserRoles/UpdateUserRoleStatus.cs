@@ -1,43 +1,46 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using RDF.Arcana.API.Data;
-using RDF.Arcana.API.Features.Setup.UserRoles.Exceptions;
+﻿using RDF.Arcana.API.Data;
+                               using RDF.Arcana.API.Features.Setup.UserRoles.Exceptions;
 
-namespace RDF.Arcana.API.Features.Setup.UserRoles;
-
-public class UpdateUserRoleStatus
+namespace RDF.Arcana.API.Features.Setup.UserRoles
 {
-    public class UpdateUserRoleStatusCommand : IRequest<Unit>
+    public class UpdateUserRoleStatus
     {
-        public int UserRoleId { get; set; }
-        public bool Status { get; set; }
-    }
-    public class Handler : IRequestHandler<UpdateUserRoleStatusCommand, Unit>
-    {
-        private readonly DataContext _context;
-
-        public Handler(DataContext context)
+        public class UpdateUserRoleStatusCommand : IRequest<Unit>
         {
-            _context = context;
+            public int UserRoleId { get; set; }
+            public string ModifiedBy { get; set; }
         }
 
-        public async Task<Unit> Handle(UpdateUserRoleStatusCommand request, CancellationToken cancellationToken)
+        public class Handler : IRequestHandler<UpdateUserRoleStatusCommand, Unit>
         {
-            var existingUserRole = await _context.UserRoles.FirstOrDefaultAsync(x => x.Id == request.UserRoleId, cancellationToken);
+            private readonly DataContext _context;
 
-            if (existingUserRole is null)
+            public Handler(DataContext context)
             {
-                throw new UserRoleNotFoundException();
+                _context = context;
             }
 
-            if (request.Status == false && existingUserRole.Permissions.Count > 0)
+            public async Task<Unit> Handle(UpdateUserRoleStatusCommand request, CancellationToken cancellationToken)
             {
-                throw new UserRoleDeactivationException();
-            }
+                var existingUserRole =
+                    await _context.UserRoles.FirstOrDefaultAsync(x => x.Id == request.UserRoleId, cancellationToken);
 
-            existingUserRole.IsActive = request.Status;
-            await _context.SaveChangesAsync(cancellationToken);
-            return Unit.Value;
+                if (existingUserRole is null)
+                {
+                    throw new UserRoleNotFoundException();
+                }
+
+                if (!existingUserRole.IsActive && existingUserRole.Permissions.Count > 0)
+                {
+                    throw new UserRoleDeactivationException();
+                }
+
+                // Toggle the IsActive status
+                existingUserRole.IsActive = !existingUserRole.IsActive;
+                existingUserRole.ModiefiedBy = request.ModifiedBy;
+                await _context.SaveChangesAsync(cancellationToken);
+                return Unit.Value;
+            }
         }
     }
 }

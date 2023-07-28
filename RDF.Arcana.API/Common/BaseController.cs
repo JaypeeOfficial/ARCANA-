@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace RDF.Arcana.API.Common

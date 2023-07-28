@@ -1,6 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using RDF.Arcana.API.Data;
+﻿using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Product_Category.Exceptions;
 
 namespace RDF.Arcana.API.Features.Setup.Product_Category;
@@ -27,15 +25,29 @@ public class UpdateProductCategory
                 await _context.ProductCategories.FirstOrDefaultAsync(x => x.Id == request.ProductCategoryId,
                     cancellationToken);
 
-            if (existingProductCategory is null)
+            var validateCategoryName =
+                await _context.ProductCategories.Where(x => x.ProductCategoryName == request.ProductCategoryName).FirstOrDefaultAsync(cancellationToken);
+
+            if (validateCategoryName is null)
             {
-                throw new NoProductCategoryFoundException();
+                existingProductCategory.ProductCategoryName = request.ProductCategoryName;
+                existingProductCategory.UpdatedAt = DateTime.Now;
+
+                await _context.SaveChangesAsync(cancellationToken);
+                return Unit.Value;
+
             }
-
-            existingProductCategory.ProductCategoryName = request.ProductCategoryName;
-            existingProductCategory.UpdatedAt = DateTime.Now;
-
-            await _context.SaveChangesAsync(cancellationToken);
+            
+            if (validateCategoryName.ProductCategoryName == request.ProductCategoryName && validateCategoryName.Id == request.ProductCategoryId)
+            {
+                throw new Exception("No changes");
+            }
+            
+            if (validateCategoryName.ProductCategoryName == request.ProductCategoryName && validateCategoryName.Id != request.ProductCategoryId)
+            {
+                throw new ProductCategoryAlreadyExistException();
+            }
+            
             return Unit.Value;
         }
     }

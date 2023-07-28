@@ -1,6 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using RDF.Arcana.API.Common.Pagination;
+﻿using RDF.Arcana.API.Common.Pagination;
 using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Domain;
 
@@ -17,8 +15,8 @@ public class GetProductSubCategories
     public class GetProductSubCategoriesResult
     {
         public int Id { get; set; }
-        public string ProductSubCategoryName { get; set; }
         public string ProductCategoryName { get; set; }
+        public string ProductSubCategoryName { get; set; }
         public DateTime CreatedAt { get; set; } 
         public DateTime? UpdatedAt { get; set; }
         public string ModifiedBy { get; set; }
@@ -37,7 +35,8 @@ public class GetProductSubCategories
         public async Task<PagedList<GetProductSubCategoriesResult>> Handle(GetProductSubCategoriesQuery request, CancellationToken cancellationToken)
         {
             IQueryable<ProductSubCategory> productSubCategories =
-                _context.ProductSubCategories.Include(x => x.ProductCategory);
+                _context.ProductSubCategories.
+                    Include(x => x.ProductCategory);
 
             if (!string.IsNullOrEmpty(request.Search))
             {

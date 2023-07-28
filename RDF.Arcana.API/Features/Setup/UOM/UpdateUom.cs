@@ -1,6 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using RDF.Arcana.API.Data;
+﻿using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.UOM.Exceptions;
 
 namespace RDF.Arcana.API.Features.Setup.UOM;
@@ -32,12 +30,25 @@ public class UpdateUom
                 throw new UomNotFoundException();
             }
 
+            var isUomAlreadyExist = await _context.Uoms.AnyAsync(x => x.Id != request.UomId && x.UomCode == request.UomCode, cancellationToken);
+
+            if (isUomAlreadyExist)
+            {
+                throw new UomAlreadyExistException();
+            }
+
+            if (existingUom.UomCode == request.UomCode && existingUom.UomDescription == request.UomDescription)
+            {
+                throw new NoChangesMadeException();
+            }
+        
             existingUom.UomCode = request.UomCode;
             existingUom.UomDescription = request.UomDescription;
-            existingUom.UpdatedAt = DateTime.Now;
             existingUom.ModifiedBy = request.ModifiedBy;
+            existingUom.UpdatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync(cancellationToken);
+
             return Unit.Value;
         }
     }

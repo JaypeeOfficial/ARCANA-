@@ -1,6 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using RDF.Arcana.API.Data;
+﻿using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Department.Exception;
 
 namespace RDF.Arcana.API.Features.Setup.Department;

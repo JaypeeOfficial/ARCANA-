@@ -1,6 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using RDF.Arcana.API.Data;
+﻿using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Items.Exceptions;
 
 namespace RDF.Arcana.API.Features.Setup.Items;
@@ -31,7 +29,7 @@ public class UpdateItemStatus
                 throw new ItemNotFoundException();
             }
         
-            item.IsActive = request.Status;
+            item.IsActive = !item.IsActive;
             item.ModifiedBy = request.ModifiedBy;
         
             await _context.SaveChangesAsync(cancellationToken);

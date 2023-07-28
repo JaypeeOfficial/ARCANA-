@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using MySqlX.XDevAPI.Common;
 using RDF.Arcana.API.Common;
@@ -61,25 +60,29 @@ public class UserRoleController : ControllerBase
     }
 
     [HttpPatch("UpdateUserRoleStatus/{id:int}")]
-    public async Task<IActionResult> UpdateUserRoleStatus([FromRoute] int id, [FromBody]UpdateUserRoleStatus.UpdateUserRoleStatusCommand command)
-    {
-        var response = new QueryOrCommandResult<object>();
-        try
-        {
-            command.UserRoleId = id;
-            await _mediator.Send(command);
-            response.Status = StatusCodes.Status200OK;
-            response.Success = true;
-            response.Messages.Add("User Role status has been updated successfully");
-            return Ok(response);
-        }
-        catch (Exception e)
-        {
-            response.Status = StatusCodes.Status409Conflict;
-            response.Messages.Add(e.Message);
-            return Conflict(response);
-        }
-    }
+     public async Task<IActionResult> UpdateUserRoleStatus([FromRoute] int id)
+     {
+         var response = new QueryOrCommandResult<object>();
+         try
+         {
+             var command = new UpdateUserRoleStatus.UpdateUserRoleStatusCommand
+             {
+                 UserRoleId = id,
+                 ModifiedBy = User.Identity?.Name
+             };
+             await _mediator.Send(command);
+             response.Status = StatusCodes.Status200OK;
+             response.Success = true;
+             response.Messages.Add("User Role status has been successfully updated");
+             return Ok(response);
+         }
+         catch (Exception e)
+         {
+             response.Status = StatusCodes.Status409Conflict;
+             response.Messages.Add(e.Message);
+             return Conflict(response);
+         }
+     }
 
     [HttpPut("UntagUserRole/{id:int}")]
     public async Task<IActionResult> UntagUserRolePermission([FromRoute] int id, [FromBody]UntagAndTagUserRolePermission.UntagAndTagUserRoleCommand command)

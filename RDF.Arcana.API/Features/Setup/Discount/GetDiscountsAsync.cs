@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using RDF.Arcana.API.Common.Pagination;
 using RDF.Arcana.API.Data;
 

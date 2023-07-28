@@ -1,8 +1,7 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using RDF.Arcana.API.Data;
+﻿using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Company;
 using RDF.Arcana.API.Features.Setup.Department.Exception;
+using RDF.Arcana.API.Features.Setup.Product_Sub_Category.Exeptions;
 
 namespace RDF.Arcana.API.Features.Setup.Department;
 
@@ -28,15 +27,30 @@ public class UpdateDepartment
              var validateDepartment =
                  await _context.Departments.FirstOrDefaultAsync(d => d.Id == request.DepartmentId,
                      cancellationToken);
-             if (validateDepartment is null)
+             
+             var validateDepartmentName =
+                 await _context.Departments.Where(x => x.DepartmentName == request.DepartmentName).FirstOrDefaultAsync(cancellationToken);
+
+             if (validateDepartmentName is null)
              {
-                 throw new NoDepartmentFoundException();
+                 validateDepartment.DepartmentName = request.DepartmentName;
+                 validateDepartment.UpdatedAt = DateTime.Now;
+
+                 await _context.SaveChangesAsync(cancellationToken);
+                 return Unit.Value;
+
              }
-
-             validateDepartment.DepartmentName = request.DepartmentName;
-             validateDepartment.UpdatedAt = DateTime.Now;
-
-             await _context.SaveChangesAsync(cancellationToken);
+            
+             if (validateDepartmentName.DepartmentName == request.DepartmentName && validateDepartmentName.Id == request.DepartmentId)
+             {
+                 throw new System.Exception("No changes");
+             }
+            
+             if (validateDepartmentName.DepartmentName == request.DepartmentName && validateDepartmentName.Id != request.DepartmentId)
+             {
+                 throw new DepartmentAlreadyExistException(request.DepartmentName);
+             }
+             
              return Unit.Value;
          }
      }

@@ -1,6 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using RDF.Arcana.API.Data;
+﻿using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Items.Exceptions;
 
 namespace RDF.Arcana.API.Features.Setup.Items;
@@ -12,7 +10,7 @@ public class UpdateItem
         public string ItemCode { get; set; }
         public string ItemDescription { get; set; }
         public int UomId { get; set; }
-        public int ProductCategoryId { get; set; }
+        public int ProductSubCategoryId { get; set; }
         public int MeatTypeId { get; set; }
     }
     
@@ -36,7 +34,7 @@ public class UpdateItem
     
             item.ItemDescription = request.ItemDescription;
             item.UomId = request.UomId;
-            item.ProductCategoryId = request.ProductCategoryId;
+            item.ProductSubCategoryId = request.ProductSubCategoryId;
             item.MeatTypeId = request.MeatTypeId;
     
             await _context.SaveChangesAsync(cancellationToken);

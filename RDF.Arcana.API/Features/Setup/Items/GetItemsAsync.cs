@@ -1,6 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using RDF.Arcana.API.Common.Pagination;
+﻿using RDF.Arcana.API.Common.Pagination;
 using RDF.Arcana.API.Data;
 
 namespace RDF.Arcana.API.Features.Setup.Items;
@@ -20,6 +18,7 @@ public class GetItemsAsync
             public string ItemDescription { get; set; }
             public string Uom { get; set; }
             public string ProductCategory { get; set; }
+            public string ProductSubCategoryName { get; set; }
             public string MeatType { get; set; }
             public bool IsActive { get; set; }
             public string AddedBy { get; set; }
@@ -40,7 +39,8 @@ public class GetItemsAsync
                 IQueryable<Domain.Items> items = _context.Items
                     .Include(x => x.Uom)
                     .Include(x => x.MeatType)
-                    .Include(x => x.ProductCategory);
+                    .Include(x => x.ProductSubCategory)
+                    .ThenInclude(x => x.ProductCategory);
     
                 if (!string.IsNullOrEmpty(request.Search))
                 {

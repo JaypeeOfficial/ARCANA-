@@ -10,8 +10,8 @@ public static class ProductSubCategoryMappingExtension
         return new GetProductSubCategories.GetProductSubCategoriesResult
         {
             Id = productSubCategory.Id,
-            ProductSubCategoryName = productSubCategory.ProductSubCategoryName,
             ProductCategoryName = productSubCategory.ProductCategory.ProductCategoryName,
+            ProductSubCategoryName = productSubCategory.ProductSubCategoryName,
             CreatedAt = productSubCategory.CreatedAt,
             UpdatedAt = productSubCategory.UpdatedAt,
             ModifiedBy = productSubCategory.ModifiedBy,

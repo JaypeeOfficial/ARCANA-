@@ -1,6 +1,4 @@
-﻿using MediatR;
- using Microsoft.EntityFrameworkCore;
- using RDF.Arcana.API.Common.Pagination;
+﻿using RDF.Arcana.API.Common.Pagination;
  using RDF.Arcana.API.Data;
  using RDF.Arcana.API.Domain;
  

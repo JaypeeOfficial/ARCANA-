@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MySqlX.XDevAPI.Common;
 using RDF.Arcana.API.Common;
 using RDF.Arcana.API.Common.Extension;
@@ -125,24 +124,27 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpPatch("UpdateUserStatus/{id}")]
-    public async Task<IActionResult> UpdateUserStatus([FromRoute] int id, [FromBody]UpdateUserStatus.UpdateUserStatusCommand command)
-    {
-        var response = new QueryOrCommandResult<object>();
-        try
-        {
-            command.UserId = id;
-            await _mediatr.Send(command);
-            response.Messages.Add("User status has been updated successfully");
-            response.Status = StatusCodes.Status200OK;
-            response.Success = true;
-            return Ok(response);
-        }
-        catch (System.Exception e)
-        {
-            response.Status = StatusCodes.Status200OK;
-            response.Success = true;
-            return Conflict(response);
-        }
-    }
+    [HttpPatch("UpdateUserStatus/{id:int}")]
+     public async Task<IActionResult> UpdateUserStatus([FromRoute] int id)
+     {
+         var response = new QueryOrCommandResult<object>();
+         try
+         {
+             var command = new UpdateUserStatus.UpdateUserStatusCommand
+             {
+                 UserId = id
+             };
+             await _mediatr.Send(command);
+             response.Messages.Add("User status has been updated successfully");
+             response.Status = StatusCodes.Status200OK;
+             response.Success = true;
+             return Ok(response);
+         }
+         catch (System.Exception e)
+         {
+             response.Status = StatusCodes.Status409Conflict;
+             response.Messages.Add(e.Message);
+             return Conflict(response);
+         }
+     }
 }

@@ -1,6 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using RDF.Arcana.API.Common.Pagination;
+﻿using RDF.Arcana.API.Common.Pagination;
 using RDF.Arcana.API.Data;
 
 namespace RDF.Arcana.API.Features.Setup.UserRoles;

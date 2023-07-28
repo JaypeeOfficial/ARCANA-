@@ -1,6 +1,4 @@
 ﻿using FlexLabs.EntityFrameworkCore.Upsert.Runners;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
 using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Discount;
 using RDF.Arcana.API.Features.Setup.Term_Days.Exceptions;

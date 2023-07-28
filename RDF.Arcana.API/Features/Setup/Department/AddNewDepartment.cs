@@ -1,6 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using RDF.Arcana.API.Data;
+﻿using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Department.Exception;
 
 namespace RDF.Arcana.API.Features.Setup.Department;
@@ -29,7 +27,7 @@ public class AddNewDepartment
             
             if (validateDepartment is not null)
             {
-                throw new NoDepartmentFoundException();
+                throw new DepartmentAlreadyExistException(request.DepartmentName);
                 
             }
 

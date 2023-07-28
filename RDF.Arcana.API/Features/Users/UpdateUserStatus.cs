@@ -1,38 +1,36 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using RDF.Arcana.API.Data;
+﻿using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Users.Exceptions;
 
-namespace RDF.Arcana.API.Features.Users;
-
-public class UpdateUserStatus
+namespace RDF.Arcana.API.Features.Users
 {
-    public class UpdateUserStatusCommand : IRequest<Unit>
+    public class UpdateUserStatus
     {
-        public int UserId { get; set; }
-        public bool Status { get; set; }
-    }
-    
-    public class Handler : IRequestHandler<UpdateUserStatusCommand, Unit>
-    {
-        private readonly DataContext _context;
-
-        public Handler(DataContext context)
+        public class UpdateUserStatusCommand : IRequest<Unit>
         {
-            _context = context;
+            public int UserId { get; set; }
         }
 
-        public async Task<Unit> Handle(UpdateUserStatusCommand request, CancellationToken cancellationToken)
+        public class Handler : IRequestHandler<UpdateUserStatusCommand, Unit>
         {
-            var existingUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == request.UserId, cancellationToken);
+            private readonly DataContext _context;
 
-            if (existingUser is null)
-                throw new NoUserFoundException();
+            public Handler(DataContext context)
+            {
+                _context = context;
+            }
 
-            existingUser.IsActive = request.Status;
+            public async Task<Unit> Handle(UpdateUserStatusCommand request, CancellationToken cancellationToken)
+            {
+                var existingUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == request.UserId, cancellationToken);
 
-            await _context.SaveChangesAsync(cancellationToken);
-            return Unit.Value;
+                if (existingUser is null)
+                    throw new NoUserFoundException();
+                
+                existingUser.IsActive = !existingUser.IsActive;
+
+                await _context.SaveChangesAsync(cancellationToken);
+                return Unit.Value;
+            }
         }
     }
 }

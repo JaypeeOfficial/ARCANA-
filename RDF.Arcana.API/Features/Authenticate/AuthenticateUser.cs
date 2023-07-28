@@ -3,8 +3,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using AutoMapper;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Domain;
@@ -115,7 +113,8 @@ public class AuthenticateUser
                 {
                     Subject = new ClaimsIdentity(new[]
                     {
-                        new Claim("id", user.Id.ToString())
+                        new Claim("id", user.Id.ToString()),
+                        new Claim(ClaimTypes.Name, user.Fullname)
                     }),
                     Expires = DateTime.UtcNow.AddDays(1),
                     Issuer = issuer,

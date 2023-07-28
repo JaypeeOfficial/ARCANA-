@@ -182,9 +182,9 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("modified_by");
 
-                    b.Property<int>("ProductCategoryId")
+                    b.Property<int>("ProductSubCategoryId")
                         .HasColumnType("int")
-                        .HasColumnName("product_category_id");
+                        .HasColumnName("product_sub_category_id");
 
                     b.Property<int>("UomId")
                         .HasColumnType("int")
@@ -200,8 +200,8 @@ namespace RDF.Arcana.API.Migrations
                     b.HasIndex("MeatTypeId")
                         .HasDatabaseName("ix_items_meat_type_id");
 
-                    b.HasIndex("ProductCategoryId")
-                        .HasDatabaseName("ix_items_product_category_id");
+                    b.HasIndex("ProductSubCategoryId")
+                        .HasDatabaseName("ix_items_product_sub_category_id");
 
                     b.HasIndex("UomId")
                         .HasDatabaseName("ix_items_uom_id");
@@ -507,6 +507,10 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("is_active");
 
+                    b.Property<string>("ModiefiedBy")
+                        .HasColumnType("longtext")
+                        .HasColumnName("modiefied_by");
+
                     b.Property<string>("Permissions")
                         .HasColumnType("longtext")
                         .HasColumnName("permissions");
@@ -534,12 +538,12 @@ namespace RDF.Arcana.API.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_items_meat_types_meat_type_id");
 
-                    b.HasOne("RDF.Arcana.API.Domain.ProductCategory", "ProductCategory")
+                    b.HasOne("RDF.Arcana.API.Domain.ProductSubCategory", "ProductSubCategory")
                         .WithMany()
-                        .HasForeignKey("ProductCategoryId")
+                        .HasForeignKey("ProductSubCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_items_product_categories_product_category_id");
+                        .HasConstraintName("fk_items_product_sub_categories_product_sub_category_id");
 
                     b.HasOne("RDF.Arcana.API.Domain.Uom", "Uom")
                         .WithMany("Items")
@@ -550,7 +554,7 @@ namespace RDF.Arcana.API.Migrations
 
                     b.Navigation("MeatType");
 
-                    b.Navigation("ProductCategory");
+                    b.Navigation("ProductSubCategory");
 
                     b.Navigation("Uom");
                 });

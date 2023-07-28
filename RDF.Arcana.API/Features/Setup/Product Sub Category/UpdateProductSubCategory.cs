@@ -1,6 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using RDF.Arcana.API.Data;
+﻿using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Product_Category.Exceptions;
 using RDF.Arcana.API.Features.Setup.Product_Sub_Category.Exeptions;
 
@@ -26,30 +24,40 @@ public class UpdateProductSubCategory
         }
 
         public async Task<Unit> Handle(UpdateProductSubCategoryCommand request, CancellationToken cancellationToken)
-        {
-            var existingProductSubCategory =
-                await _context.ProductSubCategories.FirstOrDefaultAsync(x => x.Id == request.ProductSubCategoryId,
-                    cancellationToken);
-            var validateProductCategory =
-                await _context.ProductCategories.FirstOrDefaultAsync(x => x.Id == request.ProductCategoryId,
-                    cancellationToken);
-            if (existingProductSubCategory == null)
-            {
-                throw new NoProductSubCategoryFoundException();
-            }
-
-            if (validateProductCategory is null)
-            {
-                throw new NoProductCategoryFoundException();
-            }
-
-            existingProductSubCategory.ProductSubCategoryName = request.ProductSubCategoryName;
-            existingProductSubCategory.ProductCategoryId = request.ProductCategoryId;
-            existingProductSubCategory.ModifiedBy = request.ModifiedBy;
-            existingProductSubCategory.UpdatedAt = DateTime.Now;
-
-            await _context.SaveChangesAsync(cancellationToken);
-            return Unit.Value;
-        }
+         {
+             var existingProductSubCategory = await _context.ProductSubCategories.FirstOrDefaultAsync(x => x.Id == request.ProductSubCategoryId, cancellationToken);
+         
+             if (existingProductSubCategory == null)
+             {
+                 throw new NoProductSubCategoryFoundException();
+             }
+         
+             var validateProductCategory = await _context.ProductCategories.FirstOrDefaultAsync(x => x.Id == request.ProductCategoryId, cancellationToken);
+         
+             if (validateProductCategory == null)
+             {
+                 throw new NoProductCategoryFoundException();
+             }
+         
+             var isSubCategoryNameAlreadyExist = await _context.ProductSubCategories.AnyAsync(x => x.Id != request.ProductSubCategoryId && x.ProductSubCategoryName == request.ProductSubCategoryName, cancellationToken);
+         
+             if (isSubCategoryNameAlreadyExist)
+             {
+                 throw new ProductSubCategoryAlreadyExistException(request.ProductSubCategoryName);
+             }
+         
+             if (existingProductSubCategory.ProductSubCategoryName == request.ProductSubCategoryName && existingProductSubCategory.ProductCategoryId == request.ProductCategoryId)
+             {
+                 throw new Exception("No changes");
+             }
+         
+             existingProductSubCategory.ProductSubCategoryName = request.ProductSubCategoryName;
+             existingProductSubCategory.ProductCategoryId = request.ProductCategoryId;
+             existingProductSubCategory.ModifiedBy = request.ModifiedBy;
+             existingProductSubCategory.UpdatedAt = DateTime.UtcNow;
+         
+             await _context.SaveChangesAsync(cancellationToken);
+             return Unit.Value;
+         }
     }
 }

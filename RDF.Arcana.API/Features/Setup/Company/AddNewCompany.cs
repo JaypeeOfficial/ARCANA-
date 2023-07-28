@@ -1,7 +1,5 @@
 ﻿using System.Reflection.Metadata;
 using AutoMapper;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
 using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Company.Exceptions;
 using RDF.Arcana.API.Features.Users;

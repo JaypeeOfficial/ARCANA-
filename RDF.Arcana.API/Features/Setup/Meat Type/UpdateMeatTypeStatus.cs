@@ -1,6 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using RDF.Arcana.API.Data;
+﻿using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Meat_Type.Exceptions;
 
 namespace RDF.Arcana.API.Features.Setup.Meat_Type;
@@ -32,7 +30,7 @@ public class UpdateMeatTypeStatus
                 throw new MeatTypeNotFoundException();
             }
 
-            existingMeatType.IsActive = request.Status;
+            existingMeatType.IsActive = !existingMeatType.IsActive;
 
             await _context.SaveChangesAsync(cancellationToken);
             return Unit.Value;

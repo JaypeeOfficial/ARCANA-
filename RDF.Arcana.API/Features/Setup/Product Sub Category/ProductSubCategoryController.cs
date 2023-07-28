@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RDF.Arcana.API.Common;
 using RDF.Arcana.API.Common.Extension;
 using RDF.Arcana.API.Features.Setup.Product_Category;
@@ -40,14 +39,13 @@ public class ProductSubCategoryController : Controller
       }
    }
 
-   [HttpPut("UpdateProductSubCategory/productSubCategory={id:int}/productCategory={categoryId:int}")]
-   public async Task<IActionResult> UpdateProductSubCategory([FromRoute] int id, [FromRoute] int categoryId,
+   [HttpPut("UpdateProductSubCategory/productSubCategory={id:int}")]
+   public async Task<IActionResult> UpdateProductSubCategory([FromRoute] int id,
       UpdateProductSubCategory.UpdateProductSubCategoryCommand command)
    {
       var response = new QueryOrCommandResult<object>();
       try
       {
-         command.ProductCategoryId = categoryId;
          command.ProductSubCategoryId = id;
          await _mediator.Send(command);
          response.Status = StatusCodes.Status200OK;
@@ -64,26 +62,31 @@ public class ProductSubCategoryController : Controller
    }
 
    [HttpPatch("UpdateProductSubCategoryStatus/{productSubCategoryId:int}")]
-   public async Task<IActionResult> UpdateProductSubCategoryStatus(
-      UpdateProductSubCategoryStatus.UpdateProductSubCategoryStatusCommand command, int productSubCategoryId)
-   {
-      var response = new QueryOrCommandResult<object>();
-      try
-      {
-         command.ProductSubCategoryId = productSubCategoryId;
-         await _mediator.Send(command);
-         response.Success = true;
-         response.Status = StatusCodes.Status200OK;
-         response.Messages.Add("Product Sub Category has been successfully updated");
-         return Ok(response);
-      }
-      catch (Exception e)
-      {
-         response.Status = StatusCodes.Status409Conflict;
-         response.Messages.Add(e.Message);
-         return Conflict(response);
-      }
-   }
+    public async Task<IActionResult> UpdateProductSubCategoryStatus([FromRoute]int productSubCategoryId)
+    {
+        var response = new QueryOrCommandResult<object>();
+    
+        try
+        {
+            var command = new UpdateProductSubCategoryStatus.UpdateProductSubCategoryStatusCommand {
+                ProductSubCategoryId = productSubCategoryId
+            };
+    
+            await _mediator.Send(command);
+    
+            response.Success = true;
+            response.Status = StatusCodes.Status200OK;
+            response.Messages.Add("Product Sub Category status has been successfully updated");
+            
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            response.Status = StatusCodes.Status409Conflict;
+            response.Messages.Add(e.Message);
+            return Conflict(response);
+        }
+    }
 
    [HttpGet("GetProductSubCategories")]
    public async Task<IActionResult> GetProductSubCategories([FromQuery]GetProductSubCategories.GetProductSubCategoriesQuery query)

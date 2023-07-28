@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RDF.Arcana.API.Common;
 using RDF.Arcana.API.Common.Extension;
 
@@ -100,13 +99,16 @@ public class MeatTypeController : Controller
         }
     }
 
-    [HttpPut("UpdateStatus/{id:int}")]
-    public async Task<IActionResult> UpdateMeatTypeStatus([FromRoute] int id, UpdateMeatTypeStatus.UpdateMeatTypeStatusCommand command)
+    [HttpPut("UpdateMeatTypeStatus/{id:int}")]
+    public async Task<IActionResult> UpdateMeatTypeStatus([FromRoute] int id)
     {
         var response = new QueryOrCommandResult<object>();
         try
         {
-            command.MeatTypeId = id;
+            var command = new UpdateMeatTypeStatus.UpdateMeatTypeStatusCommand
+            {
+                MeatTypeId = id
+            };
             await _mediator.Send(command);
             response.Status = StatusCodes.Status200OK;
             response.Success = true;

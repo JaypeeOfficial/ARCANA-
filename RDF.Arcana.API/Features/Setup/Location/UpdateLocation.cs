@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MediatR;
-using RDF.Arcana.API.Data;
+﻿using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Location.Exception;
 
 namespace RDF.Arcana.API.Features.Setup.Location;

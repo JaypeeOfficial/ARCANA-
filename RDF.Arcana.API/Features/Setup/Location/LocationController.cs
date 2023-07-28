@@ -1,8 +1,8 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RDF.Arcana.API.Common;
 using RDF.Arcana.API.Common.Extension;
 using RDF.Arcana.API.Features.Setup.Location.Exception;
+using RDF.Arcana.API.Features.Setup.Meat_Type;
 
 namespace RDF.Arcana.API.Features.Setup.Location;
 
@@ -38,12 +38,16 @@ public class LocationController : ControllerBase
         }
     }
 
-    [HttpPatch("UpdateLocationStatus")]
-    public async Task<IActionResult> UpdateLocationStatus(UpdateLocationStatus.UpdateLocationStatusCommand command)
+    [HttpPatch("UpdateLocationStatus/{id:int}")]
+    public async Task<IActionResult> UpdateLocationStatus([FromRoute] int id)
     {
         var response = new QueryOrCommandResult<object>();
         try
         {
+            var command = new UpdateLocationStatus.UpdateLocationStatusCommand
+            {
+                LocationId = id
+            };
             await _mediator.Send(command);
             response.Success = true;
             response.Messages.Add("Successfully updated the status");

@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RDF.Arcana.API.Common;
 using RDF.Arcana.API.Common.Extension;
 
@@ -37,12 +36,16 @@ public class ItemsController : ControllerBase
     }
     
     [HttpPatch("UpdateItemStatus/{itemCode}")]
-    public async Task<IActionResult> UpdateItemStatus([FromBody]UpdateItemStatus.UpdateItemStatusCommand command, [FromRoute]string itemCode)
+    public async Task<IActionResult> UpdateItemStatus([FromRoute]string itemCode)
     {
         var response = new QueryOrCommandResult<object>();
         try
         {
-            command.ItemCode = itemCode;
+            var command = new UpdateItemStatus.UpdateItemStatusCommand
+            {
+                ItemCode = itemCode,
+                ModifiedBy = User.Identity?.Name
+            };
             await _mediator.Send(command);
             response.Status = StatusCodes.Status200OK;
             response.Success = true;

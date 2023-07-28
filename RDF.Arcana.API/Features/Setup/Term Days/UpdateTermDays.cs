@@ -1,44 +1,57 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using RDF.Arcana.API.Data;
+﻿using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Term_Days.Exceptions;
 
-namespace RDF.Arcana.API.Features.Setup.Term_Days;
-
-public class UpdateTermDays
+namespace RDF.Arcana.API.Features.Setup.Term_Days
 {
-    public class UpdateTermDaysCommand : IRequest<Unit>
+    public class UpdateTermDays
     {
-        public int Id { get; set; }
-        public int Days { get; set; }
-        public string ModifiedBy { get; set; }
-    }
-
-    public class Handler : IRequestHandler<UpdateTermDaysCommand, Unit>
-    {
-        private readonly DataContext _context;
-
-        public Handler(DataContext context)
+        public class UpdateTermDaysCommand : IRequest<Unit>
         {
-            _context = context;
+            public int Id { get; set; }
+            public int Days { get; set; }
+            public string ModifiedBy { get; set; }
         }
 
-        public async Task<Unit> Handle(UpdateTermDaysCommand request, CancellationToken cancellationToken)
+        public class Handler : IRequestHandler<UpdateTermDaysCommand, Unit>
         {
-            var existingTermDays =
-                await _context.TermDays.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+            private readonly DataContext _context;
 
-            if (existingTermDays is null)
+            public Handler(DataContext context)
             {
-                throw new TermDaysNotFoundException();
+                _context = context;
             }
 
-            existingTermDays.Days = request.Days;
-            existingTermDays.ModifiedBy = request.ModifiedBy;
-            existingTermDays.UpdatedAt = DateTime.Now;
+            public async Task<Unit> Handle(UpdateTermDaysCommand request, CancellationToken cancellationToken)
+            {
+                var existingTermDays =
+                    await _context.TermDays.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
-            await _context.SaveChangesAsync(cancellationToken);
-            return Unit.Value;
+                if (existingTermDays is null)
+                {
+                    throw new TermDaysNotFoundException();
+                }
+
+                if (existingTermDays.Days == request.Days)
+                {
+                    throw new Exception("No changes");
+                }
+
+                var isTermDaysAlreadyExist = await _context.TermDays
+                    .AnyAsync(x => x.Id != request.Id && x.Days == request.Days, cancellationToken);
+
+                if (isTermDaysAlreadyExist)
+                {
+                    throw new TermDaysAlreadyExist();
+                }
+
+                existingTermDays.Days = request.Days;
+                existingTermDays.ModifiedBy = request.ModifiedBy;
+                existingTermDays.UpdatedAt = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync(cancellationToken);
+
+                return Unit.Value;
+            }
         }
     }
 }

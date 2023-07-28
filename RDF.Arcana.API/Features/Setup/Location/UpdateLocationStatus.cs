@@ -1,6 +1,5 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using RDF.Arcana.API.Data;
+﻿using RDF.Arcana.API.Data;
+using RDF.Arcana.API.Features.Setup.Location.Exception;
 
 namespace RDF.Arcana.API.Features.Setup.Location;
 
@@ -9,7 +8,6 @@ public class UpdateLocationStatus
     public class UpdateLocationStatusCommand : IRequest<Unit>
     {
         public int LocationId { get; set; }
-        public bool Status { get; set; }
     }
     public class Handler : IRequestHandler<UpdateLocationStatusCommand, Unit>
     {
@@ -26,11 +24,12 @@ public class UpdateLocationStatus
                 await _context.Locations.FirstOrDefaultAsync(x => x.Id == request.LocationId,
                     cancellationToken);
 
-            if (validateLocation is not null)
+            if (validateLocation is null)
             {
-                validateLocation.IsActive = request.Status;
+                throw new NoLocationFoundException();
             }
 
+            validateLocation.IsActive = !validateLocation.IsActive;
             await _context.SaveChangesAsync(cancellationToken);
             return Unit.Value;
         }

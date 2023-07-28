@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RDF.Arcana.API.Common;
 using RDF.Arcana.API.Common.Extension;
 
@@ -59,17 +58,20 @@ public class UomController : Controller
     }
 
     [HttpPatch("UpdateUomStatus/{id:int}")]
-    public async Task<IActionResult> UpdateUomStatus([FromRoute] int id,
-        [FromBody] UpdateUomStatus.UpdateUomStatusCommand command)
+    public async Task<IActionResult> UpdateUomStatus([FromRoute] int id)
     {
         var response = new QueryOrCommandResult<object>();
         try
         {
-            command.UomId = id;
+            var command = new UpdateUomStatus.UpdateUomStatusCommand
+            {
+                UomId = id,
+                ModifiedBy = User.Identity?.Name
+            };
             await _mediator.Send(command);
             response.Status = StatusCodes.Status200OK;
             response.Success = true;
-            response.Messages.Add("UOm status haas been updated successfully");
+            response.Messages.Add("UOM status haas been updated successfully");
             return Ok(response);
         }
         catch (Exception e)

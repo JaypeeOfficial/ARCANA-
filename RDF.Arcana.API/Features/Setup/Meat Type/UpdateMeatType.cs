@@ -1,6 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using RDF.Arcana.API.Data;
+﻿using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Meat_Type.Exceptions;
 
 namespace RDF.Arcana.API.Features.Setup.Meat_Type;
@@ -27,16 +25,31 @@ public class UpdateMeatType
         {
             var existingMeatType = await _context.MeatTypes.FirstOrDefaultAsync(x => x.Id == request.MeatTypeId, cancellationToken);
 
-            if (existingMeatType is null)
+            var validateMeatTypeName =
+                await _context.MeatTypes.Where(x => x.MeatTypeName == request.MeatTypeName).FirstOrDefaultAsync(cancellationToken);
+
+            if (validateMeatTypeName is null)
             {
-                throw new MeatTypeNotFoundException();
+                existingMeatType.MeatTypeName = request.MeatTypeName;
+                existingMeatType.ModifiedBy = request.ModifiedBy;
+                existingMeatType.UpdatedAt = DateTime.Now;
+
+                await _context.SaveChangesAsync(cancellationToken);
+                return Unit.Value;
+
             }
-
-            existingMeatType.MeatTypeName = request.MeatTypeName;
-            existingMeatType.ModifiedBy = request.ModifiedBy;
-            existingMeatType.UpdatedAt = DateTime.Now;
-
-            await _context.SaveChangesAsync(cancellationToken);
+            
+            if (validateMeatTypeName.MeatTypeName == request.MeatTypeName && validateMeatTypeName.Id == request.MeatTypeId)
+            {
+                throw new Exception("No changes");
+            }
+            
+            if (validateMeatTypeName.MeatTypeName == request.MeatTypeName && validateMeatTypeName.Id != request.MeatTypeId)
+            {
+                throw new MeatTypeIsAlreadyExistException(request.MeatTypeName);
+            }
+           
+            
             return Unit.Value;
         }
     }

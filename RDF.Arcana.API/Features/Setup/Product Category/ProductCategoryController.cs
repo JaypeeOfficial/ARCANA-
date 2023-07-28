@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RDF.Arcana.API.Common;
 using RDF.Arcana.API.Common.Extension;
 
@@ -59,13 +58,15 @@ public class ProductCategoryController : ControllerBase
       }
    }
    [HttpPatch("UpdateProductCategoryStatus/{productCategoryId:int}")]
-   public async Task<IActionResult> UpdateProductCategoryStatus([FromRoute] int productCategoryId,
-      [FromBody] UpdateProductCategoryStatus.UpdateProductCategoryStatusCommand command)
+   public async Task<IActionResult> UpdateProductCategoryStatus([FromRoute] int productCategoryId)
    {
       var response = new QueryOrCommandResult<object>();
       try
       {
-         command.ProductCategoryId = productCategoryId;
+         var command = new UpdateProductCategoryStatus.UpdateProductCategoryStatusCommand
+         {
+            ProductCategoryId = productCategoryId
+         };
          await _mediator.Send(command);
          response.Success = true;
          response.Messages.Add("Product Category status has been updated");

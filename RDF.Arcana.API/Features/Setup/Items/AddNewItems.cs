@@ -1,6 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using RDF.Arcana.API.Data;
+﻿using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Items.Exceptions;
 using RDF.Arcana.API.Features.Setup.Meat_Type.Exceptions;
 using RDF.Arcana.API.Features.Setup.Product_Category.Exceptions;
@@ -32,7 +30,7 @@ public class AddNewItems
         {
             var existingItem = await _context.Items.FirstOrDefaultAsync(x => x.ItemCode == request.ItemCode, cancellationToken);
             var validateProductCategory =
-                await _context.ProductCategories.FirstOrDefaultAsync(x => x.Id == request.ProductCategoryId,
+                await _context.ProductSubCategories.FirstOrDefaultAsync(x => x.Id == request.ProductCategoryId,
                     cancellationToken);
             var validateUom = await _context.Uoms.FirstOrDefaultAsync(x => x.Id == request.UomId, cancellationToken);
             var validateMeatType =
@@ -63,7 +61,7 @@ public class AddNewItems
                 ItemCode = request.ItemCode,
                 ItemDescription = request.ItemDescription,
                 UomId = request.UomId,
-                ProductCategoryId = request.ProductCategoryId,
+                ProductSubCategoryId = request.ProductCategoryId,
                 MeatTypeId = request.MeatTypeId,
                 IsActive = true
             };

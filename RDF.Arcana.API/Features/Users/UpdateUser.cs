@@ -1,6 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Tsp;
+﻿using Org.BouncyCastle.Tsp;
 using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Company.Exceptions;
 using RDF.Arcana.API.Features.Setup.Department.Exception;

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Org.BouncyCastle.Tls.Crypto.Impl;
 using RDF.Arcana.API.Common;
