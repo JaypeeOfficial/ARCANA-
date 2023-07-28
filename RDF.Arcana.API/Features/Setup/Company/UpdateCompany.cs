@@ -5,7 +5,7 @@ using RDF.Arcana.API.Features.Setup.Company.Exceptions;
 
 namespace RDF.Arcana.API.Features.Setup.Company;
 
-[Route("api/[controller]")]
+[Route("api/Company")]
 [ApiController]
 
 public class UpdateCompany : ControllerBase

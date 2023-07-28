@@ -7,7 +7,7 @@ using RDF.Arcana.API.Data;
 
 namespace RDF.Arcana.API.Features.Setup.Discount;
 
-[Route("api/[controller]")]
+[Route("api/Discount")]
 [ApiController]
 
 public class GetDiscountsAsync : ControllerBase

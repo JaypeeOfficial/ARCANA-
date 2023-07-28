@@ -1,40 +1,76 @@
-﻿using RDF.Arcana.API.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using RDF.Arcana.API.Common;
+using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.UserRoles.Exceptions;
-using EntityFrameworkQueryableExtensions = Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions;
 
 namespace RDF.Arcana.API.Features.Setup.UserRoles;
 
-public class UntagAndTagUserRolePermission
+[Route("api/UserRole")]
+[ApiController]
+
+public class UntagAndTagUserRolePermission : ControllerBase
 {
+    private readonly IMediator _mediator;
+
+    public UntagAndTagUserRolePermission(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
     public class UntagAndTagUserRoleCommand : IRequest<Unit>
     {
         public int UserRoleId { get; set; }
         public ICollection<string> Permissions { get; set; }
-    }
-    public class Handler : IRequestHandler<UntagAndTagUserRoleCommand, Unit>
-    {
-        private readonly DataContext _context;
+        public string ModifiedBy { get; set; }
 
-        public Handler(DataContext context)
+        public class Handler : IRequestHandler<UntagAndTagUserRoleCommand, Unit>
         {
-            _context = context;
-        }
+            private readonly DataContext _context;
 
-        public async Task<Unit> Handle(UntagAndTagUserRoleCommand request, CancellationToken cancellationToken)
-        {
-            var existingUseRole = await _context.UserRoles
-                .FirstOrDefaultAsync(x => x.Id == request.UserRoleId, cancellationToken);
-
-            if (existingUseRole is null)
+            public Handler(DataContext context)
             {
-                throw new UserRoleNotFoundException();
+                _context = context;
             }
 
-            existingUseRole.Permissions = request.Permissions;
-            existingUseRole.UpdatedAt = DateTime.Now;
+            public async Task<Unit> Handle(UntagAndTagUserRoleCommand request, CancellationToken cancellationToken)
+            {
+                var existingUseRole = await _context.UserRoles
+                    .FirstOrDefaultAsync(x => x.Id == request.UserRoleId, cancellationToken);
 
-            await _context.SaveChangesAsync(cancellationToken);
-            return Unit.Value;
+                if (existingUseRole is null)
+                {
+                    throw new UserRoleNotFoundException();
+                }
+
+                existingUseRole.Permissions = request.Permissions;
+                existingUseRole.UpdatedAt = DateTime.Now;
+
+                await _context.SaveChangesAsync(cancellationToken);
+                return Unit.Value;
+            }
+        }
+    }
+    
+    [HttpPut("UntagUserRole/id={id:int}")]
+    public async Task<IActionResult> UntagUserRolePermission([FromRoute] int id,
+        [FromBody] UntagAndTagUserRoleCommand command)
+    {
+        var response = new QueryOrCommandResult<object>();
+        try
+        {
+            command.UserRoleId = id;
+            command.ModifiedBy = User.Identity?.Name;
+            await _mediator.Send(command);
+            response.Status = StatusCodes.Status200OK;
+            response.Success = true;
+            response.Messages.Add("User Role has been successfully untagged");
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            response.Messages.Add(e.Message);
+            response.Status = StatusCodes.Status409Conflict;
+            return Conflict(response);
         }
     }
 }

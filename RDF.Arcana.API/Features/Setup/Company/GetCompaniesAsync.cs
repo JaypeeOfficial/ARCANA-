@@ -6,7 +6,7 @@ using RDF.Arcana.API.Data;
 
 namespace RDF.Arcana.API.Features.Setup.Company;
 
-[Route("api/Companies")]
+[Route("api/Company")]
 [ApiController]
 
 public class GetCompaniesAsync : ControllerBase

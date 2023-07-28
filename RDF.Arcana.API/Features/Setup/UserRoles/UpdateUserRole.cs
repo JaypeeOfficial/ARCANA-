@@ -1,14 +1,27 @@
-﻿using RDF.Arcana.API.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using RDF.Arcana.API.Common;
+using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.UserRoles.Exceptions;
 
 namespace RDF.Arcana.API.Features.Setup.UserRoles;
 
-public class UpdateUserRole
+[Route("api/UserRole")]
+[ApiController]
+
+public class UpdateUserRole : ControllerBase
 {
+    private readonly IMediator _mediator;
+
+    public UpdateUserRole(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
     public class UpdateUserRoleCommand : IRequest<Unit>
     {
         public int UserRoleId { get; set; }
         public string RoleName { get; set; }
+        public string ModifiedBy { get; set; }
     }
 
     public class Handler : IRequestHandler<UpdateUserRoleCommand, Unit>
@@ -31,11 +44,32 @@ public class UpdateUserRole
             }
             //Add validation mus have 1 permission if it tagged to a user
 
-            existingUserRole.RoleName = request.RoleName;
+            existingUserRole.UserRoleName = request.RoleName;
             existingUserRole.UpdatedAt = DateTime.Now;
 
             await _context.SaveChangesAsync(cancellationToken);
             return Unit.Value;
+        }
+    }
+    
+    [HttpPut("UpdateUserRole/{id:int}")]
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody]UpdateUserRole.UpdateUserRoleCommand command)
+    {
+        var response = new QueryOrCommandResult<object>();
+        try
+        {
+            command.UserRoleId = id;
+            await _mediator.Send(command);
+            response.Status = StatusCodes.Status200OK;
+            response.Success = true;
+            response.Messages.Add("User Role has been updated successfully");
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            response.Status = StatusCodes.Status409Conflict;
+            response.Messages.Add(e.Message);
+            return Conflict(response);
         }
     }
 }

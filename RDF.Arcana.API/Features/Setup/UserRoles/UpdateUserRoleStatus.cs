@@ -1,46 +1,78 @@
-﻿using RDF.Arcana.API.Data;
-                               using RDF.Arcana.API.Features.Setup.UserRoles.Exceptions;
+﻿using Microsoft.AspNetCore.Mvc;
+using RDF.Arcana.API.Common;
+using RDF.Arcana.API.Data;
+using RDF.Arcana.API.Features.Setup.UserRoles.Exceptions;
 
-namespace RDF.Arcana.API.Features.Setup.UserRoles
+
+namespace RDF.Arcana.API.Features.Setup.UserRoles;
+
+[Route("api/UserRole")]
+[ApiController]
+
+public class UpdateUserRoleStatus : ControllerBase
 {
-    public class UpdateUserRoleStatus
+    private readonly IMediator _mediator;
+
+    public UpdateUserRoleStatus(IMediator mediator)
     {
-        public class UpdateUserRoleStatusCommand : IRequest<Unit>
+        _mediator = mediator;
+    }
+
+    public class UpdateUserRoleStatusCommand : IRequest<Unit>
+    {
+        public int UserRoleId { get; set; }
+        public string ModifiedBy { get; set; }
+    }
+
+    public class Handler : IRequestHandler<UpdateUserRoleStatusCommand, Unit>
+    {
+        private readonly DataContext _context;
+
+        public Handler(DataContext context)
         {
-            public int UserRoleId { get; set; }
-            public string ModifiedBy { get; set; }
+            _context = context;
         }
 
-        public class Handler : IRequestHandler<UpdateUserRoleStatusCommand, Unit>
+        public async Task<Unit> Handle(UpdateUserRoleStatusCommand request, CancellationToken cancellationToken)
         {
-            private readonly DataContext _context;
+            var existingUserRole =
+                await _context.UserRoles.FirstOrDefaultAsync(x => x.Id == request.UserRoleId, cancellationToken);
 
-            public Handler(DataContext context)
+            if (existingUserRole is null)
             {
-                _context = context;
+                throw new UserRoleNotFoundException();
             }
 
-            public async Task<Unit> Handle(UpdateUserRoleStatusCommand request, CancellationToken cancellationToken)
+            if (!existingUserRole.IsActive && existingUserRole.Permissions.Count > 0)
             {
-                var existingUserRole =
-                    await _context.UserRoles.FirstOrDefaultAsync(x => x.Id == request.UserRoleId, cancellationToken);
-
-                if (existingUserRole is null)
-                {
-                    throw new UserRoleNotFoundException();
-                }
-
-                if (!existingUserRole.IsActive && existingUserRole.Permissions.Count > 0)
-                {
-                    throw new UserRoleDeactivationException();
-                }
-
-                // Toggle the IsActive status
-                existingUserRole.IsActive = !existingUserRole.IsActive;
-                existingUserRole.ModiefiedBy = request.ModifiedBy;
-                await _context.SaveChangesAsync(cancellationToken);
-                return Unit.Value;
+                throw new UserRoleDeactivationException();
             }
+            
+            existingUserRole.IsActive = !existingUserRole.IsActive;
+            existingUserRole.ModifiedBy = request.ModifiedBy;
+            await _context.SaveChangesAsync(cancellationToken);
+            return Unit.Value;
+        }
+    }
+    
+    [HttpPut("UpdateUserRole/id={id:int}")]
+    public async Task<IActionResult> UpdateUserRole([FromRoute] int id, [FromBody]UpdateUserRole.UpdateUserRoleCommand command)
+    {
+        var response = new QueryOrCommandResult<object>();
+        try
+        {
+            command.UserRoleId = id;
+            await _mediator.Send(command);
+            response.Status = StatusCodes.Status200OK;
+            response.Success = true;
+            response.Messages.Add("User Role has been updated successfully");
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            response.Status = StatusCodes.Status409Conflict;
+            response.Messages.Add(e.Message);
+            return Conflict(response);
         }
     }
 }

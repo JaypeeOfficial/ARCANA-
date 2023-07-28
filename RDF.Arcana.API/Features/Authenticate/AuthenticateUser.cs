@@ -14,6 +14,11 @@ public class AuthenticateUser
 {
     public class AuthenticateUserQuery : IRequest<AuthenticateUserResult>
     {
+        public AuthenticateUserQuery(string username)
+        {
+            Username = username;
+        }
+
         [Required]
         public string Username
         {
@@ -48,7 +53,11 @@ public class AuthenticateUser
             set;
         }
 
-        public string RoleName { get; set; }
+        public string RoleName
+        {
+            get; 
+            set;
+        }
         public ICollection<string> Permission { get; set; }
 
         
@@ -64,7 +73,7 @@ public class AuthenticateUser
             Fullname = user.Fullname;
             Username = user.Username;
             Token = token;
-            RoleName = user.UserRoles.RoleName;
+            RoleName = user.UserRoles.UserRoleName;
             Permission = user.UserRoles.Permissions;
         }
 

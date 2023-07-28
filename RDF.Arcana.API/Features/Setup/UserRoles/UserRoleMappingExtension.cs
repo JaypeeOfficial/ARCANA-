@@ -1,6 +1,4 @@
-﻿using RDF.Arcana.API.Features.Users;
-
-namespace RDF.Arcana.API.Features.Setup.UserRoles;
+﻿namespace RDF.Arcana.API.Features.Setup.UserRoles;
 
 public static class UserRoleMappingExtension
 {
@@ -10,7 +8,7 @@ public static class UserRoleMappingExtension
         return new GetUserRolesAsync.GetUserRoleAsyncResult()
         {
             Id = userRoles.Id,
-            RoleName = userRoles.RoleName,
+            RoleName = userRoles.UserRoleName,
             CreatedAt = userRoles.CreatedAt,
             IsActive = userRoles.IsActive,
             UpdatedAt = userRoles.UpdatedAt,
