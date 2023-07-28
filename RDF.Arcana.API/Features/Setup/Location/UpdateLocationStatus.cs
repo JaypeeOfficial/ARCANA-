@@ -50,15 +50,16 @@ public class UpdateLocationStatus : ControllerBase
             return Unit.Value;
         }
     }
-    [HttpPatch("UpdateLocationStatus/{id:int}")]
+    [HttpPatch("UpdateLocationStatus/id={id:int}")]
     public async Task<IActionResult> Update([FromRoute] int id)
     {
         var response = new QueryOrCommandResult<object>();
         try
         {
-            var command = new UpdateLocationStatus.UpdateLocationStatusCommand
+            var command = new UpdateLocationStatusCommand
             {
-                LocationId = id
+                LocationId = id,
+                ModifiedBy = User.Identity?.Name
             };
             await _mediator.Send(command);
             response.Success = true;

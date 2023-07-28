@@ -66,9 +66,9 @@ public class UpdateDiscount : ControllerBase
         }
     }
     
-    [HttpPut("UpdateDiscount/{id:int}")]
+    [HttpPut("UpdateDiscount/id={id:int}")]
     public async Task<IActionResult> Update([FromRoute] int id,
-        [FromBody] UpdateDiscount.UpdateDiscountCommand command)
+        [FromBody] UpdateDiscountCommand command)
     {
         var response = new QueryOrCommandResult<object>();
         try

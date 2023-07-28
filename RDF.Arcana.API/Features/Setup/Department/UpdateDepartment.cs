@@ -67,12 +67,13 @@ public class UpdateDepartment : ControllerBase
          }
      }
      
-     [HttpPut("UpdateDepartment")]
-     public async Task<IActionResult> Update(UpdateDepartment.UpdateDepartmentCommand command)
+     [HttpPut("UpdateDepartment/id={id:int}")]
+     public async Task<IActionResult> Update(UpdateDepartmentCommand command, [FromRoute]int id)
      {
          var response = new QueryOrCommandResult<object>();
          try
          {
+             command.DepartmentId = id;
              command.ModifiedBy = User.Identity?.Name;
              await _mediator.Send(command);
              response.Success = true;

@@ -49,7 +49,7 @@ public class UpdateCompanyStatus : ControllerBase
         }
     }
     
-    [HttpPatch("UpdateCompanyStatus/{id:int}")]
+    [HttpPatch("UpdateCompanyStatus/id={id:int}")]
     public async Task<IActionResult> UpdateStatus([FromRoute] int id)
     {
         var response = new QueryOrCommandResult<object>();

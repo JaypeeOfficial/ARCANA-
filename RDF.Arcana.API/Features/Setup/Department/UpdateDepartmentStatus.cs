@@ -48,7 +48,7 @@ public class UpdateDepartmentStatus : ControllerBase
         }
     }
     
-    [HttpPatch("UpdateDepartmentStatus/{id:int}")]
+    [HttpPatch("UpdateDepartmentStatus/id={id:int}")]
     public async Task<IActionResult> UpdateStatus([FromRoute] int id)
     {
         var response = new QueryOrCommandResult<object>();

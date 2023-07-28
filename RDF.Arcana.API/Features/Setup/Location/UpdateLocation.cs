@@ -8,7 +8,7 @@ namespace RDF.Arcana.API.Features.Setup.Location;
 [Route("api/Location")]
 [ApiController]
 
-public abstract class UpdateLocation : ControllerBase
+public class UpdateLocation : ControllerBase
 {
 
     private readonly IMediator _mediator;
@@ -66,7 +66,7 @@ public abstract class UpdateLocation : ControllerBase
         }
     }
     
-    [HttpPut("UpdateLocation/{id:int}")]
+    [HttpPut("UpdateLocation/id={id:int}")]
     public async Task<IActionResult> Update(UpdateLocationCommand command, [FromRoute] int id)
     {
         var response = new QueryOrCommandResult<object>();

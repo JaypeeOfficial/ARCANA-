@@ -53,14 +53,17 @@ public class UpdateDiscountStatus : ControllerBase
         }
     }
     
-    [HttpPatch("UpdateDiscountStatus/{id:int}")]
-    public async Task<IActionResult> Update([FromRoute] int id,
-        UpdateDiscountStatusCommand command)
+    [HttpPatch("UpdateDiscountStatus/id={id:int}")]
+    public async Task<IActionResult> Update([FromRoute] int id)
     {
         var response = new QueryOrCommandResult<object>();
         try
         {
-            command.Id = id;
+            var command = new UpdateDiscountStatusCommand
+            {
+                Id = id,
+                ModifiedBy = User.Identity?.Name
+            };
             await _mediator.Send(command);
             response.Messages.Add("Discount status has been updated successfully");
             response.Status = StatusCodes.Status200OK;
