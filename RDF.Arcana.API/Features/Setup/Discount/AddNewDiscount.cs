@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using RDF.Arcana.API.Common;
 using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Discount.Exception;
@@ -23,6 +24,7 @@ public class AddNewDiscount : ControllerBase
         public decimal UpperBound { get; set; }
         public decimal CommissionRateLower { get; set; }
         public decimal CommissionRateUpper { get; set; }
+        public int AddedBy { get; set; }
     }
     public class Handler : IRequestHandler<AddNewDiscountCommand, Unit>
     {
@@ -52,11 +54,11 @@ public class AddNewDiscount : ControllerBase
                 UpperBound = request.UpperBound,
                 CommissionRateLower = request.CommissionRateLower,
                 CommissionRateUpper = request.CommissionRateUpper,
+                AddedBy = request.AddedBy,
                 IsActive = true
             };
 
             await _context.Discounts.AddAsync(discount, cancellationToken);
-    
             await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
@@ -69,6 +71,11 @@ public class AddNewDiscount : ControllerBase
         var response = new QueryOrCommandResult<object>();
         try
         {
+            if (User.Identity is ClaimsIdentity identity 
+                && int.TryParse(identity.FindFirst("id")?.Value, out var userId))
+            {
+                command.AddedBy = userId;
+            }
             await _mediator.Send(command);
             response.Status = StatusCodes.Status200OK;
             response.Success = true;

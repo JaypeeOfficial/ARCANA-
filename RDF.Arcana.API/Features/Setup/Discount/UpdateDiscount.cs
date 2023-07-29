@@ -38,9 +38,9 @@ public class UpdateDiscount : ControllerBase
 
         public async Task<Unit> Handle(UpdateDiscountCommand request, CancellationToken cancellationToken)
         {
-            var discount = await _context.Discounts.FindAsync(request.Id);
+            var existingDiscount = await _context.Discounts.FindAsync(request.Id);
 
-            if (discount == null)
+            if (existingDiscount == null)
                 throw new DiscountNotFoundException();
 
             var overlapExists = await _context.Discounts
@@ -52,13 +52,23 @@ public class UpdateDiscount : ControllerBase
 
             if (overlapExists)
                 throw new DiscountOverlapsToTheExistingOneException();
+            
+            if(
+                existingDiscount.LowerBound == request.LowerBound &&
+                existingDiscount.UpperBound == request.UpperBound &&
+                existingDiscount.CommissionRateLower == request.CommissionRateLower &&
+                existingDiscount.CommissionRateUpper == request.CommissionRateUpper &&
+                existingDiscount.CommissionRateUpper == request.CommissionRateUpper)
+            {
+                throw new System.Exception("No changes");
+            }
 
-            discount.LowerBound = request.LowerBound;
-            discount.UpperBound = request.UpperBound;
-            discount.CommissionRateLower = request.CommissionRateLower;
-            discount.CommissionRateUpper = request.CommissionRateUpper;
-            discount.ModifiedBy = request.ModifiedBy;
-            discount.UpdateAt = DateTime.Now;
+            existingDiscount.LowerBound = request.LowerBound;
+            existingDiscount.UpperBound = request.UpperBound;
+            existingDiscount.CommissionRateLower = request.CommissionRateLower;
+            existingDiscount.CommissionRateUpper = request.CommissionRateUpper;
+            existingDiscount.ModifiedBy = request.ModifiedBy ?? "Admin";
+            existingDiscount.UpdateAt = DateTime.Now;
 
             await _context.SaveChangesAsync(cancellationToken);
 
@@ -66,7 +76,7 @@ public class UpdateDiscount : ControllerBase
         }
     }
     
-    [HttpPut("UpdateDiscount/id={id:int}")]
+    [HttpPut("UpdateDiscount/{id:int}")]
     public async Task<IActionResult> Update([FromRoute] int id,
         [FromBody] UpdateDiscountCommand command)
     {

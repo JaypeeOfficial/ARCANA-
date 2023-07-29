@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using RDF.Arcana.API.Common;
 using RDF.Arcana.API.Data;
@@ -22,7 +23,7 @@ public class AddNewUserRoles : ControllerBase
     {
         public string RoleName { get; set; }
         public List<string> Permission { get; set; }
-        public string AddedBy { get; set; }
+        public int AddedBy { get; set; }
     }
     
     public class Handler : IRequestHandler<AddNewUserRolesCommand, Unit>
@@ -63,7 +64,11 @@ public class AddNewUserRoles : ControllerBase
         var response = new QueryOrCommandResult<object>();
         try
         {
-            command.AddedBy = User.Identity?.Name;
+            if (User.Identity is ClaimsIdentity identity 
+                && int.TryParse(identity.FindFirst("id")?.Value, out var userId))
+            {
+                command.AddedBy = userId;
+            }
             await _mediator.Send(command);
             response.Success = true;
             response.Status = StatusCodes.Status200OK;

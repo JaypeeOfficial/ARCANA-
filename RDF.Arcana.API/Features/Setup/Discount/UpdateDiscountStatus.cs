@@ -46,14 +46,14 @@ public class UpdateDiscountStatus : ControllerBase
 
             existingDiscount.IsActive = request.Status;
             existingDiscount.UpdateAt = DateTime.Now;
-            existingDiscount.ModifiedBy = request.ModifiedBy;
+            existingDiscount.ModifiedBy = request.ModifiedBy ?? "Admin";
 
             await _context.SaveChangesAsync(cancellationToken);
             return Unit.Value;
         }
     }
     
-    [HttpPatch("UpdateDiscountStatus/id={id:int}")]
+    [HttpPatch("UpdateDiscountStatus/{id:int}")]
     public async Task<IActionResult> Update([FromRoute] int id)
     {
         var response = new QueryOrCommandResult<object>();
@@ -77,5 +77,4 @@ public class UpdateDiscountStatus : ControllerBase
             return Conflict(response);
         }
     }
-    
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using RDF.Arcana.API.Common;
 using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Department.Exception;
@@ -20,7 +21,7 @@ public class AddNewDepartment : ControllerBase
     public class AddNewDepartmentCommand : IRequest<Unit>
     {
         public string DepartmentName { get; set; }
-        public string AddedBy { get; set; }
+        public int AddedBy { get; set; }
     }
     public class Handler : IRequestHandler<AddNewDepartmentCommand, Unit>
     {
@@ -65,7 +66,11 @@ public class AddNewDepartment : ControllerBase
         var response = new QueryOrCommandResult<object>();
         try
         {
-            command.AddedBy = User.Identity?.Name;
+            if (User.Identity is ClaimsIdentity identity 
+                && int.TryParse(identity.FindFirst("id")?.Value, out var userId))
+            {
+                command.AddedBy = userId;
+            }
             await _mediator.Send(command);
             response.Status = StatusCodes.Status200OK;
             response.Success = true;

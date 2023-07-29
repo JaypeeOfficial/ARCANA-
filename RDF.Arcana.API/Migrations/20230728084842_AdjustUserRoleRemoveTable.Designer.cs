@@ -11,8 +11,8 @@ using RDF.Arcana.API.Data;
 namespace RDF.Arcana.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230728022130_AddMissingFieldstoLocationEntity")]
-    partial class AddMissingFieldstoLocationEntity
+    [Migration("20230728084842_AdjustUserRoleRemoveTable")]
+    partial class AdjustUserRoleRemoveTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -512,48 +512,7 @@ namespace RDF.Arcana.API.Migrations
                     b.HasIndex("LocationId")
                         .HasDatabaseName("ix_users_location_id");
 
-                    b.HasIndex("UserRoleId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_users_user_role_id");
-
                     b.ToTable("users", (string)null);
-                });
-
-            modelBuilder.Entity("RDF.Arcana.API.Domain.UserRoles", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("created_at");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("is_active");
-
-                    b.Property<string>("ModiefiedBy")
-                        .HasColumnType("longtext")
-                        .HasColumnName("modiefied_by");
-
-                    b.Property<string>("Permissions")
-                        .HasColumnType("longtext")
-                        .HasColumnName("permissions");
-
-                    b.Property<string>("RoleName")
-                        .HasColumnType("longtext")
-                        .HasColumnName("role_name");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("updated_at");
-
-                    b.HasKey("Id")
-                        .HasName("pk_user_roles");
-
-                    b.ToTable("user_roles", (string)null);
                 });
 
             modelBuilder.Entity("RDF.Arcana.API.Domain.Items", b =>
@@ -621,18 +580,11 @@ namespace RDF.Arcana.API.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_users_locations_location_id");
 
-                    b.HasOne("RDF.Arcana.API.Domain.UserRoles", "UserRoles")
-                        .WithOne("User")
-                        .HasForeignKey("RDF.Arcana.API.Domain.User", "UserRoleId")
-                        .HasConstraintName("fk_users_user_roles_user_role_id");
-
                     b.Navigation("Company");
 
                     b.Navigation("Department");
 
                     b.Navigation("Location");
-
-                    b.Navigation("UserRoles");
                 });
 
             modelBuilder.Entity("RDF.Arcana.API.Domain.Company", b =>
@@ -658,11 +610,6 @@ namespace RDF.Arcana.API.Migrations
             modelBuilder.Entity("RDF.Arcana.API.Domain.Uom", b =>
                 {
                     b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("RDF.Arcana.API.Domain.UserRoles", b =>
-                {
-                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

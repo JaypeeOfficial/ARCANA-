@@ -1,10 +1,22 @@
-﻿using RDF.Arcana.API.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using RDF.Arcana.API.Common;
+using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.UOM.Exceptions;
 
 namespace RDF.Arcana.API.Features.Setup.UOM;
 
-public class UpdateUomStatus
+[Route("api/Uom")]
+[ApiController]
+
+public class UpdateUomStatus : ControllerBase
 {
+    private readonly IMediator _mediator;
+
+    public UpdateUomStatus(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
     public class UpdateUomStatusCommand : IRequest<bool>
     {
         public int UomId { get; set; }
@@ -35,6 +47,31 @@ public class UpdateUomStatus
 
             await _context.SaveChangesAsync(cancellationToken);
             return true;
+        }
+    }
+    
+    [HttpPatch("UpdateUomStatus/{id:int}")]
+    public async Task<IActionResult> Update([FromRoute] int id)
+    {
+        var response = new QueryOrCommandResult<object>();
+        try
+        {
+            var command = new UpdateUomStatusCommand
+            {
+                UomId = id,
+                ModifiedBy = User.Identity?.Name
+            };
+            await _mediator.Send(command);
+            response.Status = StatusCodes.Status200OK;
+            response.Success = true;
+            response.Messages.Add("UOM status haas been updated successfully");
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            response.Status = StatusCodes.Status409Conflict;
+            response.Messages.Add(e.Message);
+            return Ok(response);
         }
     }
 }

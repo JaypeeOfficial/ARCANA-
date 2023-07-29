@@ -1,11 +1,23 @@
-﻿using RDF.Arcana.API.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using RDF.Arcana.API.Common;
+using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Product_Category.Exceptions;
 using RDF.Arcana.API.Features.Setup.Product_Sub_Category.Exeptions;
 
 namespace RDF.Arcana.API.Features.Setup.Product_Sub_Category;
 
-public class UpdateProductSubCategory
+[Route("api/ProductSubCategory")]
+[ApiController]
+
+public class UpdateProductSubCategory : ControllerBase
 {
+    private readonly IMediator _mediator;
+
+    public UpdateProductSubCategory(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
     public class UpdateProductSubCategoryCommand : IRequest<Unit>
     {
         public int ProductSubCategoryId { get; set; }
@@ -59,5 +71,27 @@ public class UpdateProductSubCategory
              await _context.SaveChangesAsync(cancellationToken);
              return Unit.Value;
          }
+    }
+    [HttpPut("UpdateProductSubCategory/{id:int}")]
+    public async Task<IActionResult> Update([FromRoute] int id,
+        UpdateProductSubCategoryCommand command)
+    {
+        var response = new QueryOrCommandResult<object>();
+        try
+        {
+            command.ProductSubCategoryId = id;
+            command.ModifiedBy = User.Identity?.Name;
+            await _mediator.Send(command);
+            response.Status = StatusCodes.Status200OK;
+            response.Success = true;
+            response.Messages.Add("Product Sub Category has been updated successfully");
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            response.Status = StatusCodes.Status409Conflict;
+            response.Messages.Add(e.Message);
+            return Conflict(response);
+        }
     }
 }

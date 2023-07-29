@@ -55,13 +55,14 @@ public class UpdateUserRoleStatus : ControllerBase
         }
     }
     
-    [HttpPut("UpdateUserRole/id={id:int}")]
+    [HttpPatch("UpdateUserRoleStatus/{id:int}")]
     public async Task<IActionResult> UpdateUserRole([FromRoute] int id, [FromBody]UpdateUserRole.UpdateUserRoleCommand command)
     {
         var response = new QueryOrCommandResult<object>();
         try
         {
             command.UserRoleId = id;
+            command.ModifiedBy = User.Identity?.Name;
             await _mediator.Send(command);
             response.Status = StatusCodes.Status200OK;
             response.Success = true;

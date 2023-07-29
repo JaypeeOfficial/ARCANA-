@@ -30,6 +30,7 @@ public class GetDepartmentAsync : ControllerBase
     {
         public int Id { get; set; }
         public string DepartmentName { get; set; }
+        public string AddedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public bool IsActive { get; set; }
@@ -46,7 +47,7 @@ public class GetDepartmentAsync : ControllerBase
 
         public async Task<PagedList<GetDepartmentAsyncResult>> Handle(GetDepartmentAsyncQuery request, CancellationToken cancellationToken)
         {
-            IQueryable<Domain.Department> department = _context.Departments.Include(x => x.Users);
+            IQueryable<Domain.Department> department = _context.Departments.Include(x => x.AddedByUser);
 
             if (!string.IsNullOrEmpty(request.Search))
             {

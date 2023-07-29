@@ -67,7 +67,7 @@ public class UpdateCompany : ControllerBase
     }
     
     [HttpPut]
-    [Route("UpdateCompany/id={id:int}")]
+    [Route("UpdateCompany/{id:int}")]
     public async Task<IActionResult> Update(UpdateCompany.UpdateCompanyCommand command, [FromRoute] int id)
     {
         var response = new QueryOrCommandResult<object>();

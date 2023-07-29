@@ -1,10 +1,23 @@
-﻿using RDF.Arcana.API.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Crypto.Engines;
+using RDF.Arcana.API.Common;
+using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Product_Category.Exceptions;
 
 namespace RDF.Arcana.API.Features.Setup.Product_Category;
 
-public class UpdateProductCategory
+[Route("api/ProductCategory")]
+[ApiController]
+
+public class UpdateProductCategory : ControllerBase
 {
+    private readonly IMediator _mediator;
+
+    public UpdateProductCategory(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
     public class UpdateProductCategoryCommand : IRequest<Unit>
     {
         public int ProductCategoryId { get; set; }
@@ -49,6 +62,27 @@ public class UpdateProductCategory
             }
             
             return Unit.Value;
+        }
+    }
+    
+    [HttpPut("UpdateProductCategory")]
+    public async Task<IActionResult> Update(UpdateProductCategoryCommand command)
+    {
+        var response = new QueryOrCommandResult<object>();
+        try
+        {
+            await _mediator.Send(command);
+            response.Status = StatusCodes.Status200OK;
+            response.Messages.Add("Product Category has been updated successfully");
+            response.Success = true;
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            response.Messages.Add(e.Message);
+            response.Status = StatusCodes.Status409Conflict;
+
+            return Conflict(response);
         }
     }
 }

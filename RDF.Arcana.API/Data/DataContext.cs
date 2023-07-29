@@ -26,20 +26,80 @@ public class DataContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-       
-       modelBuilder.Entity<UserRoles>()
-           .Property(e => e.Permissions)
-           .HasConversion(
-               v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
-               v => JsonSerializer.Deserialize<List<string>>(v, (JsonSerializerOptions)null),
-               new ValueComparer<ICollection<string>>(
-                   (c1, c2) => c1.SequenceEqual(c2),
-                   c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                   c => c.ToList()));
-       
-       modelBuilder.Entity<UserRoles>()
-           .HasOne(ur => ur.User)
-           .WithOne(u => u.UserRoles)
-           .HasForeignKey<User>(u => u.UserRoleId);
+
+        modelBuilder.Entity<UserRoles>()
+            .Property(e => e.Permissions)
+            .HasConversion(
+                v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
+                v => JsonSerializer.Deserialize<List<string>>(v, (JsonSerializerOptions)null),
+                new ValueComparer<ICollection<string>>(
+                    (c1, c2) => c1.SequenceEqual(c2),
+                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                    c => c.ToList()));
+
+        modelBuilder.Entity<UserRoles>()
+            .HasOne(ur => ur.User)
+            .WithOne(u => u.UserRoles)
+            .HasForeignKey<User>(u => u.UserRoleId);
+
+        modelBuilder.Entity<Company>()
+            .HasOne(u => u.AddedByUser)
+            .WithOne()
+            .HasForeignKey<Company>(x => x.AddedBy);
+
+        modelBuilder.Entity<Department>()
+            .HasOne(u => u.AddedByUser)
+            .WithOne()
+            .HasForeignKey<Department>(u => u.AddedBy);
+        
+        modelBuilder.Entity<Discount>()
+            .HasOne(u => u.AddedByUser)
+            .WithOne()
+            .HasForeignKey<Discount>(u => u.AddedBy);
+        
+        modelBuilder.Entity<Items>()
+            .HasOne(u => u.AddedByUser)
+            .WithOne()
+            .HasForeignKey<Items>(u => u.AddedBy);
+        
+        modelBuilder.Entity<Location>()
+            .HasOne(u => u.AddedByUser)
+            .WithOne()
+            .HasForeignKey<Location>(u => u.AddedBy);
+        
+        modelBuilder.Entity<MeatType>()
+            .HasOne(u => u.AddedByUser)
+            .WithOne()
+            .HasForeignKey<MeatType>(u => u.AddedBy);
+        
+        modelBuilder.Entity<ProductSubCategory>()
+            .HasOne(u => u.AddedByUser)
+            .WithOne()
+            .HasForeignKey<ProductSubCategory>(u => u.AddedBy);
+        
+        modelBuilder.Entity<ProductCategory>()
+            .HasOne(u => u.AddedByUser)
+            .WithOne()
+            .HasForeignKey<ProductCategory>(u => u.AddedBy);
+        
+        modelBuilder.Entity<TermDays>()
+            .HasOne(u => u.AddedByUser)
+            .WithOne()
+            .HasForeignKey<TermDays>(u => u.AddedBy);
+        
+        modelBuilder.Entity<Uom>()
+            .HasOne(u => u.AddedByUser)
+            .WithOne()
+            .HasForeignKey<Uom>(u => u.AddedBy);
+        
+        modelBuilder.Entity<User>()
+            .HasOne(u => u.AddedByUser)
+            .WithOne()
+            .HasForeignKey<User>(u => u.AddedBy);
+        
+        modelBuilder.Entity<UserRoles>()
+            .HasOne(u => u.AddedByUser)
+            .WithOne()
+            .HasForeignKey<UserRoles>(u => u.AddedBy);
     }
 }

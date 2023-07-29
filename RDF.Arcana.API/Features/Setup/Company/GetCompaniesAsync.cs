@@ -28,7 +28,8 @@ public class GetCompaniesAsync : ControllerBase
     {
         public int Id { get; set; }
         public string CompanyName { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public string AddedBy { get; set; }
+        public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public bool IsActive { get; set; }
     }
@@ -43,7 +44,9 @@ public class GetCompaniesAsync : ControllerBase
          
         public async Task<PagedList<GetCompaniesResult>> Handle(GetCompaniesQuery request, CancellationToken cancellationToken)
            {
-               var companies = _context.Companies.AsQueryable();
+               var companies = _context.Companies
+                   .Include(x => x.AddedByUser)
+                   .AsQueryable();
            
                
                if (!string.IsNullOrEmpty(request.Search))
@@ -63,7 +66,7 @@ public class GetCompaniesAsync : ControllerBase
      }
      
      [HttpGet("GetAllCompanies")]
-     public async Task<IActionResult> GetAllCompanies([FromQuery]GetCompaniesAsync.GetCompaniesQuery request)
+     public async Task<IActionResult> GetAllCompanies([FromQuery]GetCompaniesQuery request)
      {
          var response = new QueryOrCommandResult<object>();
       

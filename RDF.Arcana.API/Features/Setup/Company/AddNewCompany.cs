@@ -1,6 +1,8 @@
 ﻿using System.Reflection.Metadata;
+using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using RDF.Arcana.API.Common;
 using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Company.Exceptions;
 using RDF.Arcana.API.Features.Users;
@@ -24,7 +26,7 @@ public class AddNewCompany : ControllerBase
     public class AddNewCompanyCommand : IRequest<Unit>
     {
         public string CompanyName { get; set; }
-        public string AddedBy { get; set; }
+        public int AddedBy { get; set; }
     }
 
     public class Handler : IRequestHandler<AddNewCompanyCommand, Unit>
@@ -66,16 +68,25 @@ public class AddNewCompany : ControllerBase
     [Route("AddNewCompany")]
     public async Task<IActionResult> AddCompany(AddNewCompanyCommand command)
     {
+        var response = new QueryOrCommandResult<object>();
         try
         {
-            command.AddedBy = User.Identity?.Name;
+            if (User.Identity is ClaimsIdentity identity 
+                && int.TryParse(identity.FindFirst("id")?.Value, out var userId))
+            {
+                command.AddedBy = userId;
+            }
             await _mediator.Send(command);
-            return Ok("Successfully added!");
+            response.Status = StatusCodes.Status200OK;
+            response.Messages.Add($"{command.CompanyName} added successfully");
+            return Ok(response);
                 
         }
         catch (Exception e)
         {
-            return Conflict(e.Message);
+            response.Status = StatusCodes.Status409Conflict;
+            response.Messages.Add(e.Message);
+            return Conflict(response);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using FluentValidation;
 using FluentValidation.Validators;
 using RDF.Arcana.API.Common;
 
@@ -12,14 +13,17 @@ public class User : BaseEntity
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; }
     public bool IsActive { get; set; }
-    public int CompanyId { get; set; }
-    public int DepartmentId { get; set; }
-    public int LocationId { get; set; }
+    public int? CompanyId { get; set; }
+    public int? DepartmentId { get; set; }
+    public int? LocationId { get; set; }
     public int? UserRoleId { get; set; }
+    [ForeignKey("AddedByUser")]
+    public int? AddedBy { get; set; }
     public virtual Company Company { get; set; }
     public virtual Department Department { get; set; }
     public virtual Location Location { get; set; }
     public virtual UserRoles UserRoles { get; set; }
+    public virtual User AddedByUser { get; set; }
 }
 
 public class UserValidator : AbstractValidator<User>

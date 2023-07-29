@@ -73,8 +73,8 @@ public class AuthenticateUser
             Fullname = user.Fullname;
             Username = user.Username;
             Token = token;
-            RoleName = user.UserRoles.UserRoleName;
-            Permission = user.UserRoles.Permissions;
+            // RoleName = user.UserRoles.UserRoleName;
+            // Permission = user.UserRoles.Permissions;
         }
 
         public class Handler : IRequestHandler<AuthenticateUserQuery, AuthenticateUserResult>
@@ -94,7 +94,7 @@ public class AuthenticateUser
                             CancellationToken cancellationToken)
             {
                 var user = await _context.Users
-                        .Include(x => x.UserRoles)
+                        // .Include(x => x.UserRoles)
                     .SingleOrDefaultAsync(x => x.Username == command.Username, cancellationToken);
             
                 if (user == null || !BCrypt.Net.BCrypt.Verify(command.Password, user.Password))

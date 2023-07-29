@@ -1,4 +1,7 @@
-﻿using Org.BouncyCastle.Tsp;
+﻿using System.Runtime.InteropServices.JavaScript;
+using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Tsp;
+using RDF.Arcana.API.Common;
 using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Company.Exceptions;
 using RDF.Arcana.API.Features.Setup.Department.Exception;
@@ -8,13 +11,24 @@ using RDF.Arcana.API.Features.Users.Exceptions;
 
 namespace RDF.Arcana.API.Features.Users;
 
-public class UpdateUser
+[Route("api/User")]
+[ApiController]
+
+public class UpdateUser : ControllerBase
 {
+    private readonly IMediator _mediator;
+
+    public UpdateUser(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
     public class UpdateUserCommand : IRequest<Unit>
     {
         public int UserId { get; set; }
         public string Fullname { get; set; }
         public string Username { get; set; }
+        public string ModifiedBy { get; set; }
         public int CompanyId { get; set; }
         public int DepartmentId { get; set; }
         public int LocationId { get; set; }
@@ -62,9 +76,32 @@ public class UpdateUser
             user.LocationId = request.LocationId;
             user.DepartmentId = request.DepartmentId;
             user.UserRoleId = request.UserRoleId;
+            user.UpdatedAt = DateTime.Now;
 
             await _context.SaveChangesAsync(cancellationToken);
             return Unit.Value;
+        }
+    }
+    
+    [HttpPut("UpdateUser/{id:int}")]
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody]UpdateUserCommand command)
+    {
+        var response = new QueryOrCommandResult<object>();
+        try
+        {
+            command.UserId = id;
+            command.ModifiedBy = User.Identity?.Name;
+            await _mediator.Send(command);
+            response.Success = true;
+            response.Status = StatusCodes.Status200OK;
+            response.Messages.Add("User has been updated successfully");
+            return Ok(response);
+        }
+        catch (System.Exception e)
+        {
+            response.Status = StatusCodes.Status409Conflict;
+            response.Messages.Add(e.Message);
+            return Conflict(response);
         }
     }
 }

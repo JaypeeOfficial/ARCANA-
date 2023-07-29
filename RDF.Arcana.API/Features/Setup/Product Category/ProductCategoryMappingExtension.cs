@@ -11,7 +11,7 @@ public static class ProductCategoryMappingExtension
         {
             Id = productCategory.Id,
             ProductCategoryName = productCategory.ProductCategoryName,
-            AddedBy = productCategory.AddedBy,
+            AddedBy = productCategory.AddedByUser.Fullname,
             CreatedAt = productCategory.CreatedAt,
             IsActive = productCategory.IsActive,
             ProductSubCategory = productCategory.ProductSubCategory.Select(x => x.ProductSubCategoryName),

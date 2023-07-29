@@ -13,13 +13,14 @@ public static class MapperProfile
             Fullname = user.Fullname,
             Username = user.Username,
             Password = user.Password,
+            AddedBy = user.AddedByUser?.Fullname,
             CreatedAt = user.CreatedAt,
             IsActive = user.IsActive,
-            CompanyName = user.Company.CompanyName,
-            DepartmentName = user.Department.DepartmentName,
-            LocationName = user.Location.LocationName,
-            RoleName = user.UserRoles.UserRoleName,
-            Permission = user.UserRoles.Permissions
+            CompanyName = user.Company?.CompanyName,
+            DepartmentName = user.Department?.DepartmentName,
+            LocationName = user.Location?.LocationName,
+            RoleName = user.UserRoles?.UserRoleName,
+            Permission = user.UserRoles?.Permissions
         };
     }
 }

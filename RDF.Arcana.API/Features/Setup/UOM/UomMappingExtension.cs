@@ -14,7 +14,7 @@ public static class UomMappingExtension
             UomDescription = uom.UomDescription,
             CreatedAt = uom.CreatedAt,
             UpdatedAt = uom.UpdatedAt,
-            AddedBy = uom.AdddedBy,
+            AddedBy = uom.AddedByUser.Fullname,
             ModifiedBy = uom.ModifiedBy,
             IsActive = uom.IsActive
         };

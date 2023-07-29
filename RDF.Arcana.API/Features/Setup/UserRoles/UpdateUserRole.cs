@@ -42,23 +42,41 @@ public class UpdateUserRole : ControllerBase
             {
                 throw new UserRoleNotFoundException();
             }
-            //Add validation mus have 1 permission if it tagged to a user
 
-            existingUserRole.UserRoleName = request.RoleName;
-            existingUserRole.UpdatedAt = DateTime.Now;
+            var validateRoleName =
+                await _context.UserRoles.Where(x => x.UserRoleName == request.RoleName).FirstOrDefaultAsync(cancellationToken);
 
-            await _context.SaveChangesAsync(cancellationToken);
+            if(validateRoleName is null)
+            {
+                existingUserRole.UserRoleName = request.RoleName;
+                existingUserRole.UpdatedAt = DateTime.Now;
+    
+                await _context.SaveChangesAsync(cancellationToken);
+                return Unit.Value;
+            }
+    
+            if (validateRoleName.UserRoleName == request.RoleName && validateRoleName.Id == request.UserRoleId)
+            {
+                throw new Exception("No changes");
+            }
+
+            if (validateRoleName.UserRoleName == request.RoleName && validateRoleName.Id != request.UserRoleId)
+            {
+                throw new Exception("Role already exists.");
+            }
+
             return Unit.Value;
         }
     }
     
     [HttpPut("UpdateUserRole/{id:int}")]
-    public async Task<IActionResult> Update([FromRoute] int id, [FromBody]UpdateUserRole.UpdateUserRoleCommand command)
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody]UpdateUserRoleCommand command)
     {
         var response = new QueryOrCommandResult<object>();
         try
         {
             command.UserRoleId = id;
+            command.ModifiedBy = User.Identity?.Name;
             await _mediator.Send(command);
             response.Status = StatusCodes.Status200OK;
             response.Success = true;

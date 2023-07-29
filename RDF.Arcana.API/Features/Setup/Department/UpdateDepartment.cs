@@ -67,7 +67,7 @@ public class UpdateDepartment : ControllerBase
          }
      }
      
-     [HttpPut("UpdateDepartment/id={id:int}")]
+     [HttpPut("UpdateDepartment/{id:int}")]
      public async Task<IActionResult> Update(UpdateDepartmentCommand command, [FromRoute]int id)
      {
          var response = new QueryOrCommandResult<object>();

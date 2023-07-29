@@ -44,13 +44,13 @@ public class UpdateLocationStatus : ControllerBase
             }
 
             validateLocation.IsActive = !validateLocation.IsActive;
-            validateLocation.ModifiedBy = request.ModifiedBy;
+            validateLocation.ModifiedBy = request.ModifiedBy ?? "Admin";
             validateLocation.UpdatedAt = DateTime.Now;
             await _context.SaveChangesAsync(cancellationToken);
             return Unit.Value;
         }
     }
-    [HttpPatch("UpdateLocationStatus/id={id:int}")]
+    [HttpPatch("UpdateLocationStatus/{id:int}")]
     public async Task<IActionResult> Update([FromRoute] int id)
     {
         var response = new QueryOrCommandResult<object>();

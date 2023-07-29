@@ -12,7 +12,7 @@ public static class DiscountMappingExtension
             UpperBound = discount.UpperBound,
             CommissionRateLower = discount.CommissionRateLower,
             CommissionRateUpper = discount.CommissionRateUpper,
-            AddedBy = discount.AddedBy,
+            AddedBy = discount.AddedByUser.Fullname,
             CreatedAt = discount.CreatedAt,
             IsActive = discount.IsActive,
             UpdateAt = discount.UpdateAt

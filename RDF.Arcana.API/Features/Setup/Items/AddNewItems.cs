@@ -1,4 +1,7 @@
-﻿using RDF.Arcana.API.Data;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using RDF.Arcana.API.Common;
+using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Items.Exceptions;
 using RDF.Arcana.API.Features.Setup.Meat_Type.Exceptions;
 using RDF.Arcana.API.Features.Setup.Product_Category.Exceptions;
@@ -6,12 +9,23 @@ using RDF.Arcana.API.Features.Setup.UOM.Exceptions;
 
 namespace RDF.Arcana.API.Features.Setup.Items;
 
-public class AddNewItems
+[Route("api/Items")]
+[ApiController]
+
+public class AddNewItems : ControllerBase
 {
+    private readonly IMediator _mediator;
+
+    public AddNewItems(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
     public class AddNewItemsCommand : IRequest<Unit>
     {
         public string ItemCode { get; set; }
         public string ItemDescription { get; set; }
+        public int AddedBy { get; set; }
         public int UomId { get; set; }
         public int ProductCategoryId { get; set; }
         public int MeatTypeId { get; set; }
@@ -62,6 +76,7 @@ public class AddNewItems
                 ItemDescription = request.ItemDescription,
                 UomId = request.UomId,
                 ProductSubCategoryId = request.ProductCategoryId,
+                AddedBy = request.AddedBy,
                 MeatTypeId = request.MeatTypeId,
                 IsActive = true
             };
@@ -71,6 +86,30 @@ public class AddNewItems
             
             return Unit.Value;
 
+        }
+    }
+    
+    [HttpPost("AddNewItem")]
+    public async Task<IActionResult> AddNewItem(AddNewItemsCommand command)
+    {
+        var response = new QueryOrCommandResult<object>();
+        try
+        {
+            if (User.Identity is ClaimsIdentity identity 
+                && int.TryParse(identity.FindFirst("id")?.Value, out var userId))
+            {
+                command.AddedBy = userId;
+            }
+            await _mediator.Send(command);
+            response.Success = true;
+            response.Messages.Add($"Item {command.ItemCode} successfully added");
+            response.Status = StatusCodes.Status200OK;
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            response.Messages.Add(e.Message);
+            return Conflict(response);
         }
     }
 }

@@ -15,7 +15,7 @@ public static class ItemsMappingExtension
             ProductSubCategoryName = items.ProductSubCategory.ProductSubCategoryName,
             MeatType = items.MeatType?.MeatTypeName,
             IsActive = items.IsActive,
-            AddedBy = items.AddedBy,
+            AddedBy = items.AddedByUser.Fullname,
             ModifiedBy = items.ModifiedBy
         };
     }

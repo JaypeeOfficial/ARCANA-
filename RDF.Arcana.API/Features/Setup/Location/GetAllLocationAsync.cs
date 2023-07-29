@@ -29,6 +29,7 @@ public class GetAllLocationAsync : ControllerBase
     {
         public int Id { get; set; }
         public string LocationName { get; set; }
+        public string AddedBy { get; set; }
         public IEnumerable<string> Users { get; set; }
         public string CreatedAt { get; set; }
         public string UpdatedAt { get; set; }
@@ -47,7 +48,7 @@ public class GetAllLocationAsync : ControllerBase
         public async Task<PagedList<GetAllLocationAsyncResult>> Handle(GetAllLocationAsyncQuery request, CancellationToken cancellationToken)
         {
            IQueryable<Domain.Location> locations = _context.Locations
-               .Include(x => x.Users);
+               .Include(x => x.AddedByUser);
             
             if (!string.IsNullOrEmpty(request.Search))
             {

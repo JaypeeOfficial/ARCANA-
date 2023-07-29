@@ -13,6 +13,7 @@ public static class ProductSubCategoryMappingExtension
             ProductCategoryName = productSubCategory.ProductCategory.ProductCategoryName,
             ProductSubCategoryName = productSubCategory.ProductSubCategoryName,
             CreatedAt = productSubCategory.CreatedAt,
+            AddedBy = productSubCategory.AddedByUser.Fullname,
             UpdatedAt = productSubCategory.UpdatedAt,
             ModifiedBy = productSubCategory.ModifiedBy,
             IsActive = productSubCategory.IsActive

@@ -29,6 +29,7 @@ public class GetUserRolesAsync : ControllerBase
         public int Id { get; set; }
         public string RoleName { get; set; }
         public ICollection<string> Permissions { get; set; }
+        public string AddedBy { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; }
         public bool IsActive { get; set; }
@@ -46,7 +47,7 @@ public class GetUserRolesAsync : ControllerBase
 
         public async Task<PagedList<GetUserRoleAsyncResult>> Handle(GetUserRoleAsyncQuery request, CancellationToken cancellationToken)
         {
-            IQueryable <Domain.UserRoles> userRoles = _context.UserRoles.Include(x => x.User);
+            IQueryable <Domain.UserRoles> userRoles = _context.UserRoles.Include(x => x.AddedByUser);
 
             if (!string.IsNullOrEmpty(request.Search))
             {

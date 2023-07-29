@@ -49,11 +49,12 @@ public class GetDiscountsAsync : ControllerBase
 
         public async Task<PagedList<GetDiscountAsyncQueryResult>> Handle(GetDiscountAsyncQuery request, CancellationToken cancellationToken)
         {
-            IQueryable<Domain.Discount> discounts = _context.Discounts;
+            IQueryable<Domain.Discount> discounts = _context.Discounts
+                .Include(x => x.AddedByUser);
 
             if (!string.IsNullOrEmpty(request.Search))
             {
-                discounts = discounts.Where(x => x.AddedBy.Contains(request.Search));
+                discounts = discounts.Where(x => x.LowerBound.Equals(request.Search));
             }
 
             if (request.Status != null )

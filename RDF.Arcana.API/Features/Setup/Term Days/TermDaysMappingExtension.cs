@@ -11,7 +11,7 @@ public static class TermDaysMappingExtension
         {
             Id = termDays.Id,
             Days = termDays.Days,
-            AddedBy = termDays.AddedBy,
+            AddedBy = termDays.AddedByUser.Fullname,
             CreateAt = termDays.CreateAt,
             UpdatedAt = termDays.UpdatedAt,
             IsActive = termDays.IsActive

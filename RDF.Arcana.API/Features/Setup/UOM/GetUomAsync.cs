@@ -1,11 +1,24 @@
-﻿using RDF.Arcana.API.Common.Pagination;
+﻿using Microsoft.AspNetCore.Mvc;
+using RDF.Arcana.API.Common;
+using RDF.Arcana.API.Common.Extension;
+using RDF.Arcana.API.Common.Pagination;
 using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Domain;
 
 namespace RDF.Arcana.API.Features.Setup.UOM;
 
-public class GetUomAsync
+[Route("api/[controller]")]
+[ApiController]
+
+public class GetUomAsync : ControllerBase
 {
+    private readonly IMediator _mediator;
+
+    public GetUomAsync(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
     public class GetUomAsyncQuery : UserParams, IRequest<PagedList<GetUomQueryResult>>
     {
         public string Search { get; set; }
@@ -35,7 +48,8 @@ public class GetUomAsync
 
         public async Task<PagedList<GetUomQueryResult>> Handle(GetUomAsyncQuery request, CancellationToken cancellationToken)
         {
-            IQueryable<Uom> uoms = _context.Uoms;
+            IQueryable<Uom> uoms = _context.Uoms
+                .Include(x => x.AddedByUser);
 
             if (!string.IsNullOrEmpty(request.Search))
             {
@@ -51,6 +65,49 @@ public class GetUomAsync
 
             return await PagedList<GetUomQueryResult>.CreateAsync(result, request.PageNumber, request.PageSize);
 
+        }
+    }
+    
+    [HttpGet("GetUom")]
+    public async Task<IActionResult> GetUom([FromQuery] GetUomAsyncQuery query)
+    {
+        var response = new QueryOrCommandResult<object>();
+
+        try
+        {
+            var uom = await _mediator.Send(query);
+            Response.AddPaginationHeader(
+                uom.CurrentPage,
+                uom.PageSize,
+                uom.TotalCount,
+                uom.TotalPages,
+                uom.HasPreviousPage,
+                uom.HasNextPage
+            );
+
+            var result = new QueryOrCommandResult<object>
+            {
+                Status = StatusCodes.Status200OK,
+                Success = true,
+                Data = new
+                {
+                    uom,
+                    uom.CurrentPage,
+                    uom.PageSize,
+                    uom.TotalCount,
+                    uom.TotalPages,
+                    uom.HasPreviousPage,
+                    uom.HasNextPage
+                }
+            };
+            result.Messages.Add("Successfully fetch data");
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            response.Status = StatusCodes.Status409Conflict;
+            response.Messages.Add(e.Message);
+            return Conflict(response);
         }
     }
 }

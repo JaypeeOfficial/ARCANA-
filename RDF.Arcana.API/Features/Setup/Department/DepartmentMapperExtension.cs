@@ -9,10 +9,12 @@ public static class DepartmentMapperExtension
         {
             Id = department.Id,
             DepartmentName = department.DepartmentName,
+            AddedBy = department.AddedByUser.Fullname,
+            Users = department.Users.Select(user => user.Fullname).ToList(),
             CreatedAt = department.CreatedAt,
             UpdatedAt = department.UpdatedAt,
-            IsActive = department.IsActive,
-            Users = department.Users.Select(user => user.Fullname).ToList()
+            IsActive = department.IsActive
+            
         };
     }
 }

@@ -10,6 +10,7 @@ public static class MappingExtension
         {
             Id = company.Id,
             CompanyName = company.CompanyName,
+            AddedBy = company.AddedByUser.Fullname,
             CreatedAt = company.CreatedAt,
             UpdatedAt = company.UpdatedAt,
             IsActive = company.IsActive

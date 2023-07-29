@@ -57,7 +57,7 @@ public class UpdateLocation : ControllerBase
             }
 
             existingLocation.LocationName = request.LocationName;
-            existingLocation.ModifiedBy = request.ModifiedBy;
+            existingLocation.ModifiedBy = request.ModifiedBy ?? "Admin";
             existingLocation.UpdatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync(cancellationToken);
@@ -66,7 +66,7 @@ public class UpdateLocation : ControllerBase
         }
     }
     
-    [HttpPut("UpdateLocation/id={id:int}")]
+    [HttpPut("UpdateLocation/{id:int}")]
     public async Task<IActionResult> Update(UpdateLocationCommand command, [FromRoute] int id)
     {
         var response = new QueryOrCommandResult<object>();

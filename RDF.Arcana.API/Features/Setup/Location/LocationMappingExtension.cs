@@ -10,6 +10,7 @@ public static class LocationMappingExtension
             Id = location.Id,
             LocationName = location.LocationName,
             Users = location.Users.Select(x => x.Fullname),
+            AddedBy = location.AddedByUser.Fullname,
             CreatedAt = location.CreatedAt.ToString("MM/dd/yyyy"),
             UpdatedAt = location.UpdatedAt.ToString(),
             IsActive = location.IsActive

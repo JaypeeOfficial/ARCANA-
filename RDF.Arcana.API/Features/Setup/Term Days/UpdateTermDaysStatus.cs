@@ -1,16 +1,25 @@
-﻿using FlexLabs.EntityFrameworkCore.Upsert.Runners;
+﻿using Microsoft.AspNetCore.Mvc;
+using RDF.Arcana.API.Common;
 using RDF.Arcana.API.Data;
-using RDF.Arcana.API.Features.Setup.Discount;
 using RDF.Arcana.API.Features.Setup.Term_Days.Exceptions;
 
 namespace RDF.Arcana.API.Features.Setup.Term_Days;
 
-public class UpdateTermDaysStatus
+[Route("api/TermDays")]
+[ApiController]
+
+public class UpdateTermDaysStatus : ControllerBase
 {
+    private readonly IMediator _mediator;
+
+    public UpdateTermDaysStatus(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
     public class UpdateTermDaysStatusCommand : IRequest<Unit>
     {
         public int Id { get; set; }
-        public bool Status { get; set; }
         public string ModifiedBy { get; set; }
     }
     public class Handler : IRequestHandler<UpdateTermDaysStatusCommand, Unit>
@@ -32,12 +41,37 @@ public class UpdateTermDaysStatus
                 throw new TermDaysNotFoundException();
             }
 
-            existingTermDays.IsActive = request.Status;
+            existingTermDays.IsActive = !existingTermDays.IsActive;
             existingTermDays.UpdatedAt = DateTime.Now;
             existingTermDays.ModifiedBy = request.ModifiedBy;
 
             await _context.SaveChangesAsync(cancellationToken);
             return Unit.Value;
+        }
+    }
+    
+    [HttpPatch("UpdateTermDaysStatus/{id:int}")]
+    public async Task<IActionResult> Update([FromQuery] int id)
+    {
+        var response = new QueryOrCommandResult<object>();
+        try
+        {
+            var command = new UpdateTermDaysStatusCommand
+            {
+                Id = id,
+                ModifiedBy = User.Identity?.Name
+            };
+            await _mediator.Send(command);
+            response.Messages.Add("Term Days status has been updated successfully");
+            response.Status = StatusCodes.Status200OK;
+            response.Success = true;
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            response.Status = StatusCodes.Status409Conflict;
+            response.Messages.Add(e.Message);
+            return Conflict(response);
         }
     }
 }

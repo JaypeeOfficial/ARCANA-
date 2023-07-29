@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using RDF.Arcana.API.Common;
 using RDF.Arcana.API.Data;
 using RDF.Arcana.API.Features.Setup.Location.Exception;
@@ -20,7 +21,7 @@ public class AddNewLocation : ControllerBase
     public class AddNewLocationCommand : IRequest<Unit>
     {
         public string LocationName { get; set; }
-        public string AddedBy { get; set; }
+        public int AddedBy { get; set; }
     }
     
     public class Handler : IRequestHandler<AddNewLocationCommand, Unit>
@@ -61,7 +62,11 @@ public class AddNewLocation : ControllerBase
         var response = new QueryOrCommandResult<object>();
         try
         {
-            command.AddedBy = User.Identity?.Name;
+            if (User.Identity is ClaimsIdentity identity 
+                && int.TryParse(identity.FindFirst("id")?.Value, out var userId))
+            {
+                command.AddedBy = userId;
+            }
             await _mediator.Send(command);
             response.Success = true;
             response.Messages.Add($"Location {command.LocationName} successfully added");

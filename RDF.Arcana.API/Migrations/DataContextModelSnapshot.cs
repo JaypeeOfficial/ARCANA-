@@ -26,8 +26,8 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<string>("AddedBy")
-                        .HasColumnType("longtext")
+                    b.Property<int>("AddedBy")
+                        .HasColumnType("int")
                         .HasColumnName("added_by");
 
                     b.Property<string>("CompanyName")
@@ -52,6 +52,10 @@ namespace RDF.Arcana.API.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_companies");
+
+                    b.HasIndex("AddedBy")
+                        .IsUnique()
+                        .HasDatabaseName("ix_companies_added_by");
 
                     b.ToTable("companies", (string)null);
                 });
@@ -84,8 +88,8 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<string>("AddedBy")
-                        .HasColumnType("longtext")
+                    b.Property<int>("AddedBy")
+                        .HasColumnType("int")
                         .HasColumnName("added_by");
 
                     b.Property<DateTime>("CreatedAt")
@@ -111,6 +115,10 @@ namespace RDF.Arcana.API.Migrations
                     b.HasKey("Id")
                         .HasName("pk_departments");
 
+                    b.HasIndex("AddedBy")
+                        .IsUnique()
+                        .HasDatabaseName("ix_departments_added_by");
+
                     b.ToTable("departments", (string)null);
                 });
 
@@ -121,8 +129,8 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<string>("AddedBy")
-                        .HasColumnType("longtext")
+                    b.Property<int>("AddedBy")
+                        .HasColumnType("int")
                         .HasColumnName("added_by");
 
                     b.Property<decimal>("CommissionRateLower")
@@ -160,6 +168,10 @@ namespace RDF.Arcana.API.Migrations
                     b.HasKey("Id")
                         .HasName("pk_discounts");
 
+                    b.HasIndex("AddedBy")
+                        .IsUnique()
+                        .HasDatabaseName("ix_discounts_added_by");
+
                     b.ToTable("discounts", (string)null);
                 });
 
@@ -170,8 +182,8 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<string>("AddedBy")
-                        .HasColumnType("longtext")
+                    b.Property<int>("AddedBy")
+                        .HasColumnType("int")
                         .HasColumnName("added_by");
 
                     b.Property<DateTime>("CreatedAt")
@@ -213,6 +225,10 @@ namespace RDF.Arcana.API.Migrations
                     b.HasKey("Id")
                         .HasName("pk_items");
 
+                    b.HasIndex("AddedBy")
+                        .IsUnique()
+                        .HasDatabaseName("ix_items_added_by");
+
                     b.HasIndex("MeatTypeId")
                         .HasDatabaseName("ix_items_meat_type_id");
 
@@ -232,8 +248,8 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<string>("AddedBy")
-                        .HasColumnType("longtext")
+                    b.Property<int>("AddedBy")
+                        .HasColumnType("int")
                         .HasColumnName("added_by");
 
                     b.Property<DateTime>("CreatedAt")
@@ -259,6 +275,10 @@ namespace RDF.Arcana.API.Migrations
                     b.HasKey("Id")
                         .HasName("pk_locations");
 
+                    b.HasIndex("AddedBy")
+                        .IsUnique()
+                        .HasDatabaseName("ix_locations_added_by");
+
                     b.ToTable("locations", (string)null);
                 });
 
@@ -269,8 +289,8 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<string>("AddedBy")
-                        .HasColumnType("longtext")
+                    b.Property<int>("AddedBy")
+                        .HasColumnType("int")
                         .HasColumnName("added_by");
 
                     b.Property<DateTime>("CreatedAt")
@@ -296,6 +316,10 @@ namespace RDF.Arcana.API.Migrations
                     b.HasKey("Id")
                         .HasName("pk_meat_types");
 
+                    b.HasIndex("AddedBy")
+                        .IsUnique()
+                        .HasDatabaseName("ix_meat_types_added_by");
+
                     b.ToTable("meat_types", (string)null);
                 });
 
@@ -306,8 +330,8 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<string>("AddedBy")
-                        .HasColumnType("longtext")
+                    b.Property<int>("AddedBy")
+                        .HasColumnType("int")
                         .HasColumnName("added_by");
 
                     b.Property<DateTime>("CreatedAt")
@@ -317,6 +341,10 @@ namespace RDF.Arcana.API.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("is_active");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("longtext")
+                        .HasColumnName("modified_by");
 
                     b.Property<string>("ProductCategoryName")
                         .HasColumnType("longtext")
@@ -329,6 +357,10 @@ namespace RDF.Arcana.API.Migrations
                     b.HasKey("Id")
                         .HasName("pk_product_categories");
 
+                    b.HasIndex("AddedBy")
+                        .IsUnique()
+                        .HasDatabaseName("ix_product_categories_added_by");
+
                     b.ToTable("product_categories", (string)null);
                 });
 
@@ -338,6 +370,10 @@ namespace RDF.Arcana.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    b.Property<int>("AddedBy")
+                        .HasColumnType("int")
+                        .HasColumnName("added_by");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)")
@@ -366,6 +402,10 @@ namespace RDF.Arcana.API.Migrations
                     b.HasKey("Id")
                         .HasName("pk_product_sub_categories");
 
+                    b.HasIndex("AddedBy")
+                        .IsUnique()
+                        .HasDatabaseName("ix_product_sub_categories_added_by");
+
                     b.HasIndex("ProductCategoryId")
                         .HasDatabaseName("ix_product_sub_categories_product_category_id");
 
@@ -379,8 +419,8 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<string>("AddedBy")
-                        .HasColumnType("longtext")
+                    b.Property<int>("AddedBy")
+                        .HasColumnType("int")
                         .HasColumnName("added_by");
 
                     b.Property<DateTime>("CreateAt")
@@ -406,6 +446,10 @@ namespace RDF.Arcana.API.Migrations
                     b.HasKey("Id")
                         .HasName("pk_term_days");
 
+                    b.HasIndex("AddedBy")
+                        .IsUnique()
+                        .HasDatabaseName("ix_term_days_added_by");
+
                     b.ToTable("term_days", (string)null);
                 });
 
@@ -416,9 +460,9 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<string>("AdddedBy")
-                        .HasColumnType("longtext")
-                        .HasColumnName("addded_by");
+                    b.Property<int>("AddedBy")
+                        .HasColumnType("int")
+                        .HasColumnName("added_by");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)")
@@ -447,6 +491,10 @@ namespace RDF.Arcana.API.Migrations
                     b.HasKey("Id")
                         .HasName("pk_uoms");
 
+                    b.HasIndex("AddedBy")
+                        .IsUnique()
+                        .HasDatabaseName("ix_uoms_added_by");
+
                     b.ToTable("uoms", (string)null);
                 });
 
@@ -457,7 +505,11 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<int>("CompanyId")
+                    b.Property<int?>("AddedBy")
+                        .HasColumnType("int")
+                        .HasColumnName("added_by");
+
+                    b.Property<int?>("CompanyId")
                         .HasColumnType("int")
                         .HasColumnName("company_id");
 
@@ -465,7 +517,7 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("created_at");
 
-                    b.Property<int>("DepartmentId")
+                    b.Property<int?>("DepartmentId")
                         .HasColumnType("int")
                         .HasColumnName("department_id");
 
@@ -477,7 +529,7 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("is_active");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int?>("LocationId")
                         .HasColumnType("int")
                         .HasColumnName("location_id");
 
@@ -499,6 +551,10 @@ namespace RDF.Arcana.API.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_users");
+
+                    b.HasIndex("AddedBy")
+                        .IsUnique()
+                        .HasDatabaseName("ix_users_added_by");
 
                     b.HasIndex("CompanyId")
                         .HasDatabaseName("ix_users_company_id");
@@ -523,8 +579,8 @@ namespace RDF.Arcana.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<string>("AddedBy")
-                        .HasColumnType("longtext")
+                    b.Property<int>("AddedBy")
+                        .HasColumnType("int")
                         .HasColumnName("added_by");
 
                     b.Property<DateTime>("CreatedAt")
@@ -554,11 +610,58 @@ namespace RDF.Arcana.API.Migrations
                     b.HasKey("Id")
                         .HasName("pk_user_roles");
 
+                    b.HasIndex("AddedBy")
+                        .IsUnique()
+                        .HasDatabaseName("ix_user_roles_added_by");
+
                     b.ToTable("user_roles", (string)null);
+                });
+
+            modelBuilder.Entity("RDF.Arcana.API.Domain.Company", b =>
+                {
+                    b.HasOne("RDF.Arcana.API.Domain.User", "AddedByUser")
+                        .WithOne()
+                        .HasForeignKey("RDF.Arcana.API.Domain.Company", "AddedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_companies_users_added_by");
+
+                    b.Navigation("AddedByUser");
+                });
+
+            modelBuilder.Entity("RDF.Arcana.API.Domain.Department", b =>
+                {
+                    b.HasOne("RDF.Arcana.API.Domain.User", "AddedByUser")
+                        .WithOne()
+                        .HasForeignKey("RDF.Arcana.API.Domain.Department", "AddedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_departments_users_added_by");
+
+                    b.Navigation("AddedByUser");
+                });
+
+            modelBuilder.Entity("RDF.Arcana.API.Domain.Discount", b =>
+                {
+                    b.HasOne("RDF.Arcana.API.Domain.User", "AddedByUser")
+                        .WithOne()
+                        .HasForeignKey("RDF.Arcana.API.Domain.Discount", "AddedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_discounts_users_added_by");
+
+                    b.Navigation("AddedByUser");
                 });
 
             modelBuilder.Entity("RDF.Arcana.API.Domain.Items", b =>
                 {
+                    b.HasOne("RDF.Arcana.API.Domain.User", "AddedByUser")
+                        .WithOne()
+                        .HasForeignKey("RDF.Arcana.API.Domain.Items", "AddedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_items_users_added_by");
+
                     b.HasOne("RDF.Arcana.API.Domain.MeatType", "MeatType")
                         .WithMany()
                         .HasForeignKey("MeatTypeId")
@@ -580,6 +683,8 @@ namespace RDF.Arcana.API.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_items_uoms_uom_id");
 
+                    b.Navigation("AddedByUser");
+
                     b.Navigation("MeatType");
 
                     b.Navigation("ProductSubCategory");
@@ -587,8 +692,51 @@ namespace RDF.Arcana.API.Migrations
                     b.Navigation("Uom");
                 });
 
+            modelBuilder.Entity("RDF.Arcana.API.Domain.Location", b =>
+                {
+                    b.HasOne("RDF.Arcana.API.Domain.User", "AddedByUser")
+                        .WithOne()
+                        .HasForeignKey("RDF.Arcana.API.Domain.Location", "AddedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_locations_users_added_by");
+
+                    b.Navigation("AddedByUser");
+                });
+
+            modelBuilder.Entity("RDF.Arcana.API.Domain.MeatType", b =>
+                {
+                    b.HasOne("RDF.Arcana.API.Domain.User", "AddedByUser")
+                        .WithOne()
+                        .HasForeignKey("RDF.Arcana.API.Domain.MeatType", "AddedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_meat_types_users_added_by");
+
+                    b.Navigation("AddedByUser");
+                });
+
+            modelBuilder.Entity("RDF.Arcana.API.Domain.ProductCategory", b =>
+                {
+                    b.HasOne("RDF.Arcana.API.Domain.User", "AddedByUser")
+                        .WithOne()
+                        .HasForeignKey("RDF.Arcana.API.Domain.ProductCategory", "AddedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_product_categories_users_added_by");
+
+                    b.Navigation("AddedByUser");
+                });
+
             modelBuilder.Entity("RDF.Arcana.API.Domain.ProductSubCategory", b =>
                 {
+                    b.HasOne("RDF.Arcana.API.Domain.User", "AddedByUser")
+                        .WithOne()
+                        .HasForeignKey("RDF.Arcana.API.Domain.ProductSubCategory", "AddedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_product_sub_categories_users_added_by");
+
                     b.HasOne("RDF.Arcana.API.Domain.ProductCategory", "ProductCategory")
                         .WithMany("ProductSubCategory")
                         .HasForeignKey("ProductCategoryId")
@@ -596,36 +744,63 @@ namespace RDF.Arcana.API.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_product_sub_categories_product_categories_product_category_id");
 
+                    b.Navigation("AddedByUser");
+
                     b.Navigation("ProductCategory");
+                });
+
+            modelBuilder.Entity("RDF.Arcana.API.Domain.TermDays", b =>
+                {
+                    b.HasOne("RDF.Arcana.API.Domain.User", "AddedByUser")
+                        .WithOne()
+                        .HasForeignKey("RDF.Arcana.API.Domain.TermDays", "AddedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_term_days_users_added_by");
+
+                    b.Navigation("AddedByUser");
+                });
+
+            modelBuilder.Entity("RDF.Arcana.API.Domain.Uom", b =>
+                {
+                    b.HasOne("RDF.Arcana.API.Domain.User", "AddedByUser")
+                        .WithOne()
+                        .HasForeignKey("RDF.Arcana.API.Domain.Uom", "AddedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_uoms_users_added_by");
+
+                    b.Navigation("AddedByUser");
                 });
 
             modelBuilder.Entity("RDF.Arcana.API.Domain.User", b =>
                 {
+                    b.HasOne("RDF.Arcana.API.Domain.User", "AddedByUser")
+                        .WithOne()
+                        .HasForeignKey("RDF.Arcana.API.Domain.User", "AddedBy")
+                        .HasConstraintName("fk_users_users_added_by");
+
                     b.HasOne("RDF.Arcana.API.Domain.Company", "Company")
                         .WithMany("Users")
                         .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
                         .HasConstraintName("fk_users_companies_company_id");
 
                     b.HasOne("RDF.Arcana.API.Domain.Department", "Department")
                         .WithMany("Users")
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
                         .HasConstraintName("fk_users_departments_department_id");
 
                     b.HasOne("RDF.Arcana.API.Domain.Location", "Location")
                         .WithMany("Users")
                         .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
                         .HasConstraintName("fk_users_locations_location_id");
 
                     b.HasOne("RDF.Arcana.API.Domain.UserRoles", "UserRoles")
                         .WithOne("User")
                         .HasForeignKey("RDF.Arcana.API.Domain.User", "UserRoleId")
                         .HasConstraintName("fk_users_user_roles_user_role_id");
+
+                    b.Navigation("AddedByUser");
 
                     b.Navigation("Company");
 
@@ -634,6 +809,18 @@ namespace RDF.Arcana.API.Migrations
                     b.Navigation("Location");
 
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("RDF.Arcana.API.Domain.UserRoles", b =>
+                {
+                    b.HasOne("RDF.Arcana.API.Domain.User", "AddedByUser")
+                        .WithOne()
+                        .HasForeignKey("RDF.Arcana.API.Domain.UserRoles", "AddedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_roles_users_added_by");
+
+                    b.Navigation("AddedByUser");
                 });
 
             modelBuilder.Entity("RDF.Arcana.API.Domain.Company", b =>
