@@ -51,7 +51,7 @@ public class UntagAndTagUserRolePermission : ControllerBase
         }
     }
     
-    [HttpPut("UntagUserRole/id={id:int}")]
+    [HttpPut("UntagUserRole/{id:int}")]
     public async Task<IActionResult> UntagUserRolePermission([FromRoute] int id,
         [FromBody] UntagAndTagUserRoleCommand command)
     {
