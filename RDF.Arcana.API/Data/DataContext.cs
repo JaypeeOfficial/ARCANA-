@@ -12,7 +12,7 @@ public class DataContext : DbContext
     }
     public virtual DbSet<User> Users { get; set; }
     public virtual DbSet<Company> Companies { get; set; }
-    public virtual DbSet<Customer> Customers { get; set; }
+    public virtual DbSet<ProspectingClients> Customers { get; set; }
     public virtual DbSet<Department> Departments { get; set; }
     public virtual DbSet<Items> Items { get; set; }
     public virtual DbSet<Location> Locations { get; set; }
@@ -23,6 +23,7 @@ public class DataContext : DbContext
     public virtual DbSet<UserRoles> UserRoles { get; set; }
     public virtual DbSet<Discount> Discounts { get; set; }
     public virtual DbSet<TermDays> TermDays { get; set; }
+    public virtual DbSet<ProspectingClients> ProspectingClients { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -101,5 +102,29 @@ public class DataContext : DbContext
             .HasOne(u => u.AddedByUser)
             .WithOne()
             .HasForeignKey<UserRoles>(u => u.AddedBy);
+
+        modelBuilder.Entity<ProspectingClients>()
+            .HasOne(x => x.AddedByUser)
+            .WithOne()
+            .HasForeignKey<ProspectingClients>(u => u.AddedBy);
+
+        modelBuilder.Entity<ProspectingClients>()
+            .HasOne(x => x.ApprovedByUser)
+            .WithOne()
+            .HasForeignKey<ProspectingClients>(x => x.ApprovedBy);
+
+        // modelBuilder.Entity<UserRoles>().HasIndex(t => t.AddedBy).IsUnique(false);
+        // modelBuilder.Entity<User>().HasIndex(u => u.AddedBy).IsUnique(false);
+        // modelBuilder.Entity<Uom>().HasIndex(u => u.AddedBy).IsUnique(false);
+        // modelBuilder.Entity<TermDays>().HasIndex(u => u.AddedBy).IsUnique(false);
+        // modelBuilder.Entity<ProspectingClients>().HasIndex(u => u.AddedBy).IsUnique(false);
+        // modelBuilder.Entity<ProductCategory>().HasIndex(u => u.AddedBy).IsUnique(false);
+        // modelBuilder.Entity<ProductSubCategory>().HasIndex(u => u.AddedBy).IsUnique(false);
+        // modelBuilder.Entity<MeatType>().HasIndex(u => u.AddedBy).IsUnique(false);
+        // modelBuilder.Entity<Location>().HasIndex(u => u.AddedBy).IsUnique(false);
+        // modelBuilder.Entity<Items>().HasIndex(u => u.AddedBy).IsUnique(false);
+        // modelBuilder.Entity<Discount>().HasIndex(u => u).IsUnique(false);
+        // modelBuilder.Entity<Department>().HasIndex(u => u).IsUnique(false);
+        // modelBuilder.Entity<Company>().HasIndex(u => u.AddedBy).IsUnique(false);
     }
 }

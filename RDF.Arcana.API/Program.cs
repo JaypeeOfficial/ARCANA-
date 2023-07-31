@@ -1,16 +1,8 @@
-using System.Reflection;
 using System.Text;
-using System.Text.Json.Serialization;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RDF.Arcana.API.Data;
-using RDF.Arcana.API.Domain;
-using RDF.Arcana.API.Features.Authenticate;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,7 +43,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "RDF Arcana API", Version = "v1" });
 
     // Define the BearerAuth scheme in Swagger document
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme

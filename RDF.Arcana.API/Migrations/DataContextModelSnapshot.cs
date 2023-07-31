@@ -60,27 +60,6 @@ namespace RDF.Arcana.API.Migrations
                     b.ToTable("companies", (string)null);
                 });
 
-            modelBuilder.Entity("RDF.Arcana.API.Domain.Customer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    b.Property<string>("Fullname")
-                        .HasColumnType("longtext")
-                        .HasColumnName("fullname");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("is_active");
-
-                    b.HasKey("Id")
-                        .HasName("pk_customers");
-
-                    b.ToTable("customers", (string)null);
-                });
-
             modelBuilder.Entity("RDF.Arcana.API.Domain.Department", b =>
                 {
                     b.Property<int>("Id")
@@ -410,6 +389,130 @@ namespace RDF.Arcana.API.Migrations
                         .HasDatabaseName("ix_product_sub_categories_product_category_id");
 
                     b.ToTable("product_sub_categories", (string)null);
+                });
+
+            modelBuilder.Entity("RDF.Arcana.API.Domain.ProspectingClients", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<int>("AddedBy")
+                        .HasColumnType("int")
+                        .HasColumnName("added_by");
+
+                    b.Property<int?>("ApprovedBy")
+                        .HasColumnType("int")
+                        .HasColumnName("approved_by");
+
+                    b.Property<string>("AuthorizationLetter")
+                        .HasColumnType("longtext")
+                        .HasColumnName("authorization_letter");
+
+                    b.Property<string>("AuthorizedRepresentative")
+                        .HasColumnType("longtext")
+                        .HasColumnName("authorized_representative");
+
+                    b.Property<string>("AuthorizedRepresentativePosition")
+                        .HasColumnType("longtext")
+                        .HasColumnName("authorized_representative_position");
+
+                    b.Property<string>("BarangayOrOtherPermitPhoto")
+                        .HasColumnType("longtext")
+                        .HasColumnName("barangay_or_other_permit_photo");
+
+                    b.Property<string>("BusinessAddress")
+                        .HasColumnType("longtext")
+                        .HasColumnName("business_address");
+
+                    b.Property<string>("BusinessName")
+                        .HasColumnType("longtext")
+                        .HasColumnName("business_name");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("date_of_birth");
+
+                    b.Property<string>("DtiPermitPhoto")
+                        .HasColumnType("longtext")
+                        .HasColumnName("dti_permit_photo");
+
+                    b.Property<string>("EmailAddress")
+                        .HasColumnType("longtext")
+                        .HasColumnName("email_address");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("longtext")
+                        .HasColumnName("modified_by");
+
+                    b.Property<string>("OwnerValidId")
+                        .HasColumnType("longtext")
+                        .HasColumnName("owner_valid_id");
+
+                    b.Property<string>("OwnersAddress")
+                        .HasColumnType("longtext")
+                        .HasColumnName("owners_address");
+
+                    b.Property<string>("OwnersName")
+                        .HasColumnType("longtext")
+                        .HasColumnName("owners_name");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("longtext")
+                        .HasColumnName("phone_number");
+
+                    b.Property<string>("RegistrationStatus")
+                        .HasColumnType("longtext")
+                        .HasColumnName("registration_status");
+
+                    b.Property<string>("RepresentativeValidId")
+                        .HasColumnType("longtext")
+                        .HasColumnName("representative_valid_id");
+
+                    b.Property<string>("StoreCategory")
+                        .HasColumnType("longtext")
+                        .HasColumnName("store_category");
+
+                    b.Property<string>("StorePhoto")
+                        .HasColumnType("longtext")
+                        .HasColumnName("store_photo");
+
+                    b.Property<string>("TitleAuthorizedSignatory")
+                        .HasColumnType("longtext")
+                        .HasColumnName("title_authorized_signatory");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_prospecting_clients");
+
+                    b.HasIndex("AddedBy")
+                        .IsUnique()
+                        .HasDatabaseName("ix_prospecting_clients_added_by");
+
+                    b.HasIndex("ApprovedBy")
+                        .IsUnique()
+                        .HasDatabaseName("ix_prospecting_clients_approved_by");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_prospecting_clients_user_id");
+
+                    b.ToTable("prospecting_clients", (string)null);
                 });
 
             modelBuilder.Entity("RDF.Arcana.API.Domain.TermDays", b =>
@@ -749,6 +852,30 @@ namespace RDF.Arcana.API.Migrations
                     b.Navigation("ProductCategory");
                 });
 
+            modelBuilder.Entity("RDF.Arcana.API.Domain.ProspectingClients", b =>
+                {
+                    b.HasOne("RDF.Arcana.API.Domain.User", "AddedByUser")
+                        .WithOne()
+                        .HasForeignKey("RDF.Arcana.API.Domain.ProspectingClients", "AddedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_prospecting_clients_users_added_by_user_id");
+
+                    b.HasOne("RDF.Arcana.API.Domain.User", "ApprovedByUser")
+                        .WithOne()
+                        .HasForeignKey("RDF.Arcana.API.Domain.ProspectingClients", "ApprovedBy")
+                        .HasConstraintName("fk_prospecting_clients_users_approved_by");
+
+                    b.HasOne("RDF.Arcana.API.Domain.User", null)
+                        .WithMany("ProspectingClients")
+                        .HasForeignKey("UserId")
+                        .HasConstraintName("fk_prospecting_clients_users_user_id");
+
+                    b.Navigation("AddedByUser");
+
+                    b.Navigation("ApprovedByUser");
+                });
+
             modelBuilder.Entity("RDF.Arcana.API.Domain.TermDays", b =>
                 {
                     b.HasOne("RDF.Arcana.API.Domain.User", "AddedByUser")
@@ -846,6 +973,11 @@ namespace RDF.Arcana.API.Migrations
             modelBuilder.Entity("RDF.Arcana.API.Domain.Uom", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("RDF.Arcana.API.Domain.User", b =>
+                {
+                    b.Navigation("ProspectingClients");
                 });
 
             modelBuilder.Entity("RDF.Arcana.API.Domain.UserRoles", b =>

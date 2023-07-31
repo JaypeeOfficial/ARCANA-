@@ -9,7 +9,7 @@ public class CustomAuthorizationMiddlewareResultHandler : AuthorizationMiddlewar
 {
     private readonly AuthorizationMiddlewareResultHandler _defaultHandler = new();
 
-    public async Task HandleAsync(
+    public new async Task HandleAsync(
         RequestDelegate requestDelegate,
         HttpContext httpContext,
         AuthorizationPolicy authorizationPolicy,
