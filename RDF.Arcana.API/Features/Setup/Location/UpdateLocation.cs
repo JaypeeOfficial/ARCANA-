@@ -13,7 +13,7 @@ public class UpdateLocation : ControllerBase
 
     private readonly IMediator _mediator;
 
-    protected UpdateLocation(IMediator mediator)
+    public UpdateLocation(IMediator mediator)
     {
         _mediator = mediator;
     }

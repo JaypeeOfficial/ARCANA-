@@ -73,8 +73,8 @@ public class AuthenticateUser
             Fullname = user.Fullname;
             Username = user.Username;
             Token = token;
-            RoleName = user.UserRoles.UserRoleName;
-            Permission = user.UserRoles.Permissions;
+            RoleName = user.UserRoles?.UserRoleName;
+            Permission = user.UserRoles?.Permissions;
         }
 
         public class Handler : IRequestHandler<AuthenticateUserQuery, AuthenticateUserResult>
