@@ -3,6 +3,7 @@ using RDF.Arcana.API.Common;
 using RDF.Arcana.API.Common.Extension;
 using RDF.Arcana.API.Common.Pagination;
 using RDF.Arcana.API.Data;
+using RDF.Arcana.API.Domain;
 
 namespace RDF.Arcana.API.Features.Setup.Company;
 
@@ -29,6 +30,7 @@ public class GetCompaniesAsync : ControllerBase
         public int Id { get; set; }
         public string CompanyName { get; set; }
         public string AddedBy { get; set; }
+        public IEnumerable<string> Users { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public bool IsActive { get; set; }
@@ -45,6 +47,7 @@ public class GetCompaniesAsync : ControllerBase
         public async Task<PagedList<GetCompaniesResult>> Handle(GetCompaniesQuery request, CancellationToken cancellationToken)
            {
                var companies = _context.Companies
+                   .Include(x => x.Users)
                    .Include(x => x.AddedByUser)
                    .AsQueryable();
            
